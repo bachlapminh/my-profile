@@ -1,27 +1,27 @@
 /* ════════════════════════════════════════════════════
    MINH BACH — GAME DESIGNER PORTFOLIO
-   Style: "Strategic Creative"
-   Palette: Deep Navy + Warm Gold + Steel Blue accents
+   Style: "AAA Strategic Creative"
+   Palette: Dark Navy-Teal + Vivid Gold + Blue/Green accents
    ════════════════════════════════════════════════════ */
 
 /* ════════ DESIGN TOKENS ════════ */
 :root {
-  --bg:      #0c0f14;
-  --bg2:     #111520;
-  --bg3:     #171c28;
-  --bg4:     #1e2435;
-  --border:  rgba(200,150,78,0.10);
-  --border2: rgba(200,150,78,0.22);
-  --border3: rgba(200,150,78,0.06);
-  --text:    #e8e0d4;
-  --text2:   #9b9284;
-  --text3:   #5e574c;
-  --gold:    #c8964e;
-  --gold-lt: #ddb06a;
-  --gold-dk: #8a5e14;
-  --blue:    #4a89c8;
-  --blue-dk: #2d5a8a;
-  --green:   #5ba67d;
+  --bg:      #0B1218;
+  --bg2:     #121A22;
+  --bg3:     #1B2632;
+  --bg4:     #243040;
+  --border:  rgba(242,201,76,0.10);
+  --border2: rgba(242,201,76,0.22);
+  --border3: rgba(242,201,76,0.06);
+  --text:    #E6EDF3;
+  --text2:   #A0A8B0;
+  --text3:   #6A6C8F;
+  --gold:    #F2C94C;
+  --gold-lt: #F7D97A;
+  --gold-dk: #B8941A;
+  --blue:    #4EA1FF;
+  --blue-dk: #2D6AB8;
+  --green:   #56D364;
   --f-display: 'Space Grotesk', sans-serif;
   --f-body:    'Plus Jakarta Sans', sans-serif;
   --f-mono:    'JetBrains Mono', monospace;
@@ -143,7 +143,7 @@ body::after {
   background: var(--gold-lt);
   border-color: var(--gold-lt);
   transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(200,150,78,0.3);
+  box-shadow: 0 8px 32px rgba(242,201,76,0.3);
 }
 .btn-ghost {
   background: transparent;
@@ -154,7 +154,7 @@ body::after {
   color: var(--gold);
   border-color: var(--gold);
   transform: translateY(-2px);
-  background: rgba(200,150,78,0.05);
+  background: rgba(242,201,76,0.05);
 }
 
 /* ════════ PLACEHOLDERS ════════ */
@@ -247,7 +247,7 @@ body::after {
 .nav-flag.active {
   opacity: 1;
   border-color: var(--border2);
-  background: rgba(200,150,78,0.06);
+  background: rgba(242,201,76,0.06);
 }
 
 .flag-mini {
@@ -333,13 +333,13 @@ body::after {
 .nav-links a.active::after { transform: scaleX(1); transform-origin: left; }
 
 .nav-cta {
-  background: rgba(200,150,78,0.1);
+  background: rgba(242,201,76,0.1);
   border: 1px solid var(--border2) !important;
   padding: 0.45rem 1rem;
   border-radius: 5px;
 }
 .nav-cta:hover {
-  background: rgba(200,150,78,0.15) !important;
+  background: rgba(242,201,76,0.15) !important;
 }
 .nav-cta::after { display: none !important; }
 
@@ -425,7 +425,7 @@ body::after {
   max-width: 750px; max-height: 750px;
   border-radius: 50%;
   background: radial-gradient(circle,
-    rgba(200,150,78,0.07) 0%,
+    rgba(242,201,76,0.07) 0%,
     rgba(74,137,200,0.03) 40%,
     transparent 70%
   );
@@ -529,10 +529,12 @@ body::after {
   opacity: 0;
   animation: fadeIn 1s var(--ease) 0.9s forwards;
 }
-.hero-avatar {
+img.hero-avatar {
   width: clamp(160px, 18vw, 240px);
   aspect-ratio: 3/4;
   border-radius: 16px;
+  object-fit: cover;
+  object-position: top center;
 }
 .hero-avatar-ring {
   position: absolute;
@@ -663,13 +665,13 @@ body::after {
   box-shadow: 0 16px 56px rgba(0,0,0,0.4);
 }
 
-.project-banner {
+img.project-banner {
   width: 100%;
   height: 100%;
   min-height: 300px;
-  border-radius: 0;
-  border: none;
+  object-fit: cover;
   border-right: 1px solid var(--border);
+  display: block;
 }
 
 .project-body {
@@ -690,15 +692,15 @@ body::after {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--text3);
-  background: rgba(200,150,78,0.06);
-  border: 1px solid var(--border);
+  background: rgba(242,201,76,0.08);
+  border: 1px solid rgba(242,201,76,0.14);
   padding: 0.2rem 0.55rem;
   border-radius: 3px;
 }
 .tag-role {
   color: var(--gold);
-  border-color: var(--border2);
-  background: rgba(200,150,78,0.1);
+  border-color: rgba(242,201,76,0.35);
+  background: rgba(242,201,76,0.12);
 }
 
 .project-title {
@@ -742,7 +744,7 @@ body::after {
   font-size: 0.78rem;
   font-weight: 500;
   color: var(--text);
-  background: rgba(200,150,78,0.08);
+  background: rgba(242,201,76,0.08);
   border: 1px solid var(--border);
   padding: 0.35rem 0.75rem;
   border-radius: 5px;
@@ -759,15 +761,15 @@ body::after {
   font-family: var(--f-mono);
   font-size: 0.55rem;
   letter-spacing: 0.06em;
-  color: var(--text3);
-  border: 1px solid var(--border);
+  color: var(--text2);
+  border: 1px solid rgba(242,201,76,0.14);
   padding: 0.15rem 0.45rem;
   border-radius: 3px;
   transition: border-color 0.2s, color 0.2s;
 }
 .chip:hover {
-  border-color: var(--border2);
-  color: var(--text2);
+  border-color: rgba(242,201,76,0.3);
+  color: var(--text);
 }
 
 .project-link {
@@ -813,7 +815,7 @@ body::after {
   margin-top: 1.5rem;
   padding: 1.25rem 1.5rem;
   border-left: 3px solid var(--gold-dk);
-  background: rgba(200,150,78,0.04);
+  background: rgba(242,201,76,0.04);
   border-radius: 0 8px 8px 0;
   font-size: 0.95rem;
   font-style: italic;
@@ -882,7 +884,7 @@ body::after {
 .j-dot--active {
   background: var(--gold);
   border-color: var(--gold);
-  box-shadow: 0 0 12px rgba(200,150,78,0.5);
+  box-shadow: 0 0 12px rgba(242,201,76,0.5);
 }
 
 .j-content {
@@ -982,12 +984,43 @@ body::after {
 .j-badge.gold {
   color: var(--gold);
   border-color: var(--gold-dk);
-  background: rgba(200,150,78,0.08);
+  background: rgba(242,201,76,0.08);
+}
+
+/* Achievement photos in journey */
+.j-achievement-photo {
+  margin-top: 1rem;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border2);
+  background: var(--bg);
+  position: relative;
+}
+.j-photo {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 10px 10px 0 0;
+  transition: transform 0.5s var(--ease);
+}
+.j-achievement-photo:hover .j-photo {
+  transform: scale(1.03);
+}
+.j-photo-caption {
+  display: block;
+  padding: 0.65rem 0.85rem;
+  font-family: var(--f-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.04em;
+  color: var(--gold);
+  background: var(--bg2);
+  border-top: 1px solid var(--border);
+  line-height: 1.5;
 }
 
 .j-item--current .j-content {
   border-color: var(--border2);
-  background: linear-gradient(135deg, var(--bg3) 0%, rgba(200,150,78,0.03) 100%);
+  background: linear-gradient(135deg, var(--bg3) 0%, rgba(242,201,76,0.03) 100%);
 }
 
 /* Trust Stats */
@@ -1059,7 +1092,7 @@ body::after {
   font-size: 0.75rem;
   font-weight: 500;
   color: var(--text2);
-  background: rgba(200,150,78,0.05);
+  background: rgba(242,201,76,0.05);
   border: 1px solid var(--border);
   padding: 0.3rem 0.65rem;
   border-radius: 5px;
@@ -1068,7 +1101,7 @@ body::after {
 .skill-tag:hover {
   border-color: var(--gold-dk);
   color: var(--gold);
-  background: rgba(200,150,78,0.1);
+  background: rgba(242,201,76,0.1);
 }
 
 /* ════════ COLLABORATION ════════ */

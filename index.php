@@ -30,17 +30,18 @@ session_start();
   <div class="splash-content">
     <div class="splash-logo">MB<span>.</span></div>
     <h1 class="splash-title">
-      <span class="splash-line-vi">Chọn Ngôn Ngữ</span>
       <span class="splash-line-en">Choose Language</span>
+      <span class="splash-line-vi">Chọn Ngôn Ngữ</span>
     </h1>
     <div class="splash-buttons">
+      <a href="portfolio.php?lang=en" class="splash-btn splash-btn--recommended" id="btnEn">
+        <span class="flag flag-en" aria-label="English"></span>
+        <span class="splash-btn-text">English</span>
+        <span class="splash-btn-rec">Recommended</span>
+      </a>
       <a href="portfolio.php?lang=vi" class="splash-btn" id="btnVi">
         <span class="flag flag-vi" aria-label="Vietnam"></span>
         <span class="splash-btn-text">Tiếng Việt</span>
-      </a>
-      <a href="portfolio.php?lang=en" class="splash-btn" id="btnEn">
-        <span class="flag flag-en" aria-label="English"></span>
-        <span class="splash-btn-text">English</span>
       </a>
     </div>
   </div>
@@ -61,23 +62,22 @@ session_start();
       flower.style.left = Math.random() * 100 + 'vw';
       flower.style.width = (18 + Math.random() * 22) + 'px';
       flower.style.height = flower.style.width;
-      flower.style.opacity = 0.3 + Math.random() * 0.5;
-      const duration = 6 + Math.random() * 8;
-      const delay = Math.random() * 2;
+      flower.style.opacity = 0.35 + Math.random() * 0.45;
+      const duration = 5 + Math.random() * 7;
       const drift = -40 + Math.random() * 80;
-      flower.style.animation = `flowerFall ${duration}s ${delay}s linear forwards`;
+      flower.style.animation = `flowerFall ${duration}s linear forwards`;
       flower.style.setProperty('--drift', drift + 'px');
       flower.style.setProperty('--spin', (Math.random() * 360) + 'deg');
       flowerContainer.appendChild(flower);
-      setTimeout(() => flower.remove(), (duration + delay) * 1000 + 100);
+      setTimeout(() => flower.remove(), duration * 1000 + 100);
     }
 
-    // Create initial batch
-    for (let i = 0; i < 12; i++) {
-      setTimeout(() => createFlower(), i * 400);
+    // Spawn initial batch immediately (scattered at different Y positions)
+    for (let i = 0; i < 20; i++) {
+      createFlower();
     }
     // Continue spawning
-    setInterval(createFlower, 800);
+    setInterval(createFlower, 600);
   </script>
 </body>
 </html>

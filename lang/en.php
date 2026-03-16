@@ -169,6 +169,7 @@ $lang = [
   'contact_sub'     => "I'm always up for conversations about game design, product strategy, and the weird joys of balancing an in-game economy at 2 AM.",
   'contact_email'   => 'Send an Email',
   'contact_linkedin'=> 'Connect on LinkedIn',
+  'contact_zalo'    => 'Zalo / Phone',
   'contact_cv'      => 'Download CV',
 
   // ═══════ FOOTER ═══════

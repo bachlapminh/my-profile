@@ -94,16 +94,7 @@ $otherLang = ($currentLang === 'en') ? 'vi' : 'en';
         </div>
       </div>
       <div class="hero-avatar-wrap">
-        <!--
-          PLACEHOLDER: Ảnh đại diện (Hero Avatar)
-          Gợi ý: Ảnh chân dung 3:4, ánh sáng tự nhiên, nền tối
-          Khi có ảnh: xoá div.ph, thêm <img src="images/avatar.jpg" alt="Minh Bach">
-        -->
-        <div class="ph hero-avatar">
-          <div class="ph-icon">📷</div>
-          <div class="ph-title">Avatar Photo</div>
-          <div class="ph-hint">Ảnh chân dung 3:4<br>ánh sáng tự nhiên, nền tối</div>
-        </div>
+        <img src="images/avatar.png" alt="Minh Bach — Game Designer" class="hero-avatar">
         <div class="hero-avatar-ring"></div>
         <div class="hero-avatar-tag">HCM<br>VN</div>
       </div>
@@ -149,15 +140,7 @@ $otherLang = ($currentLang === 'en') ? 'vi' : 'en';
 
         <!-- PROJECT 1: Silkroad -->
         <article class="project-card project-card--featured reveal">
-          <!--
-            PLACEHOLDER: Silkroad Online Origin Mobile Banner
-            Gợi ý: Official Key Art hoặc gameplay screenshot, 16:9, min 1200×675px
-          -->
-          <div class="ph project-banner">
-            <div class="ph-icon">🎮</div>
-            <div class="ph-title">Project Banner — Silkroad Mobile</div>
-            <div class="ph-hint">Official Key Art hoặc gameplay screenshot<br>16:9, min 1200×675px</div>
-          </div>
+          <img src="images/silkroadonline.png" alt="Silkroad Online Origin Mobile" class="project-banner">
           <div class="project-body">
             <div class="project-meta">
               <span class="project-tag"><?= t('proj_sr_tag1') ?></span>
@@ -186,15 +169,7 @@ $otherLang = ($currentLang === 'en') ? 'vi' : 'en';
 
         <!-- PROJECT 2: Yulgang -->
         <article class="project-card reveal" style="transition-delay:0.15s">
-          <!--
-            PLACEHOLDER: Yulgang Private Server Banner
-            Gợi ý: Screenshot gameplay hoặc Key Art, 16:9, min 1200×675px
-          -->
-          <div class="ph project-banner">
-            <div class="ph-icon">⚔️</div>
-            <div class="ph-title">Project Banner — Yulgang</div>
-            <div class="ph-hint">Screenshot gameplay hoặc Key Art<br>16:9, min 1200×675px</div>
-          </div>
+          <img src="images/yulgangonline.png" alt="Yulgang Online" class="project-banner">
           <div class="project-body">
             <div class="project-meta">
               <span class="project-tag"><?= t('proj_yg_tag1') ?></span>
@@ -215,8 +190,7 @@ $otherLang = ($currentLang === 'en') ? 'vi' : 'en';
               <span class="chip"><?= t('chip_community') ?></span>
               <span class="chip"><?= t('chip_full_po') ?></span>
             </div>
-            <a href="https://minhbach.weebly.com/hi7879p-khaacutech-giang-h7891.html"
-               target="_blank" class="project-link"><?= t('proj_yg_link') ?> <span class="arrow">→</span></a>
+            <a href="yulgang.php" class="project-link"><?= t('proj_yg_link') ?> <span class="arrow">→</span></a>
           </div>
         </article>
 
@@ -315,6 +289,10 @@ $otherLang = ($currentLang === 'en') ? 'vi' : 'en';
               <span class="j-badge"><?= t('j3_badge3') ?></span>
               <span class="j-badge gold"><?= t('j3_badge4') ?></span>
             </div>
+            <div class="j-achievement-photo">
+              <img src="images/employeeOTY.png" alt="SohaGame Employee of the Year 2020" class="j-photo">
+              <span class="j-photo-caption"><?= ($currentLang === 'vi') ? 'Vinh danh cá nhân xuất sắc & Team dự án — SohaGame 2020' : 'Outstanding Employee & Project Team Award — SohaGame 2020' ?></span>
+            </div>
           </div>
         </div>
 
@@ -350,6 +328,10 @@ $otherLang = ($currentLang === 'en') ? 'vi' : 'en';
               <span class="j-badge gold"><?= t('j5_badge1') ?></span>
               <span class="j-badge gold"><?= t('j5_badge2') ?></span>
               <span class="j-badge gold"><?= t('j5_badge3') ?></span>
+            </div>
+            <div class="j-achievement-photo">
+              <img src="images/hattrick.png" alt="Vietnam Game Awards 2025 — Triple Win" class="j-photo">
+              <span class="j-photo-caption"><?= ($currentLang === 'vi') ? '🏆 Hattrick Vietnam Game Awards 2025 — Game of the Year, Best Gameplay, Best Graphic Design' : '🏆 Vietnam Game Awards 2025 Triple Win — Game of the Year, Best Gameplay, Best Graphic Design' ?></span>
             </div>
           </div>
         </div>
@@ -472,8 +454,9 @@ $otherLang = ($currentLang === 'en') ? 'vi' : 'en';
         <h2 class="contact-title"><?= t('contact_title_1') ?><br><?= t('contact_title_2') ?> <em><?= t('contact_title_3') ?></em>?</h2>
         <p class="contact-sub"><?= t('contact_sub') ?></p>
         <div class="contact-row">
-          <a href="mailto:your@email.com" class="btn btn-primary"><?= t('contact_email') ?></a>
-          <a href="#" class="btn btn-ghost"><?= t('contact_linkedin') ?></a>
+          <a href="mailto:bachlapminh140395@gmail.com" class="btn btn-primary"><?= t('contact_email') ?></a>
+          <a href="https://www.linkedin.com/in/minhbachlap" target="_blank" class="btn btn-ghost"><?= t('contact_linkedin') ?></a>
+          <a href="https://zalo.me/0908992408" target="_blank" class="btn btn-ghost"><?= t('contact_zalo') ?></a>
           <a href="#" class="btn btn-ghost"><?= t('contact_cv') ?></a>
         </div>
       </div>

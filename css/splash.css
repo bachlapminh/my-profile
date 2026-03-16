@@ -3,11 +3,11 @@
    ════════════════════════════════════════════════════ */
 
 :root {
-  --gold:    #c8964e;
-  --gold-lt: #ddb06a;
-  --bg:      #0c0f14;
-  --text:    #e8e0d4;
-  --text2:   #9b9284;
+  --gold:    #F2C94C;
+  --gold-lt: #F7D97A;
+  --bg:      #0B1218;
+  --text:    #E6EDF3;
+  --text2:   #A0A8B0;
   --ease:    cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -22,8 +22,8 @@ body {
 .splash-bg {
   position: fixed; inset: 0; z-index: 0;
   background: url('https://wallpaperaccess.com/full/5723924.jpg') center/cover no-repeat;
-  filter: blur(6px) brightness(0.35);
-  transform: scale(1.1); /* prevent blur edge showing */
+  filter: blur(6px) brightness(0.3);
+  transform: scale(1.1);
 }
 
 /* ═══ Overlay ═══ */
@@ -31,8 +31,8 @@ body {
   position: fixed; inset: 0; z-index: 1;
   background: radial-gradient(
     ellipse at center,
-    rgba(12,15,20,0.55) 0%,
-    rgba(12,15,20,0.82) 100%
+    rgba(11,18,24,0.50) 0%,
+    rgba(11,18,24,0.80) 100%
   );
 }
 
@@ -107,19 +107,18 @@ body::after {
   flex-direction: column;
   gap: 0.25rem;
 }
-.splash-line-vi {
+.splash-line-en {
   font-family: 'Space Grotesk', sans-serif;
   font-size: clamp(1.5rem, 4vw, 2.2rem);
   font-weight: 600;
   color: var(--text);
   letter-spacing: -0.01em;
 }
-.splash-line-en {
+.splash-line-vi {
   font-size: 0.85rem;
   font-weight: 400;
   color: var(--text2);
   letter-spacing: 0.06em;
-  text-transform: uppercase;
 }
 
 /* Buttons */
@@ -135,9 +134,9 @@ body::after {
   gap: 0.85rem;
   text-decoration: none;
   padding: 1.75rem 2.5rem;
-  border: 1px solid rgba(200,150,78,0.15);
+  border: 1px solid rgba(242,201,76,0.15);
   border-radius: 14px;
-  background: rgba(12,15,20,0.65);
+  background: rgba(11,18,24,0.65);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   cursor: pointer;
@@ -146,9 +145,9 @@ body::after {
 }
 .splash-btn:hover {
   border-color: var(--gold);
-  background: rgba(200,150,78,0.08);
+  background: rgba(242,201,76,0.08);
   transform: translateY(-6px);
-  box-shadow: 0 16px 48px rgba(200,150,78,0.15),
+  box-shadow: 0 16px 48px rgba(242,201,76,0.12),
               0 4px 16px rgba(0,0,0,0.3);
 }
 .splash-btn:active {
@@ -161,6 +160,23 @@ body::after {
   font-weight: 600;
   color: var(--text);
   letter-spacing: 0.02em;
+}
+
+/* Recommended badge */
+.splash-btn-rec {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: rgba(242,201,76,0.12);
+  border: 1px solid rgba(242,201,76,0.25);
+  padding: 0.15rem 0.55rem;
+  border-radius: 10px;
+}
+.splash-btn--recommended {
+  border-color: rgba(242,201,76,0.3);
 }
 
 /* ═══ CSS Flags ═══ */

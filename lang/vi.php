@@ -169,6 +169,7 @@ $lang = [
   'contact_sub'     => 'Tôi luôn sẵn sàng cho những cuộc trò chuyện về game design, chiến lược sản phẩm, và niềm vui kỳ lạ khi cân bằng kinh tế in-game lúc 2 giờ sáng.',
   'contact_email'   => 'Gửi Email',
   'contact_linkedin'=> 'Kết nối LinkedIn',
+  'contact_zalo'    => 'Zalo / Điện thoại',
   'contact_cv'      => 'Tải CV',
 
   // ═══════ FOOTER ═══════
