@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minh Bach — Portfolio Summary</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    
+    :root {
+      --bg: #0e1117;
+      --bg2: #161b22;
+      --bg3: #1c2333;
+      --text: #e0e6ed;
+      --muted: #8b95a5;
+      --accent: #fbbf24;
+      --accent2: #f59e0b;
+      --border: rgba(255,255,255,.08);
+      --green: #34d399;
+    }
+
+    @page {
+      size: A4;
+      margin: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 9pt;
+      line-height: 1.45;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    /* ── Page container ── */
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      max-height: 297mm;
+      overflow: hidden;
+      padding: 14mm 16mm 12mm;
+      page-break-after: always;
+      position: relative;
+      background: var(--bg);
+    }
+    .page:last-child { page-break-after: avoid; }
+
+    /* ── Typography ── */
+    h1 { font-family: 'Space Grotesk', sans-serif; font-size: 28pt; font-weight: 700; line-height: 1.1; }
+    h2 { font-family: 'Space Grotesk', sans-serif; font-size: 14pt; font-weight: 600; line-height: 1.2; margin-bottom: 6px; }
+    h3 { font-family: 'Space Grotesk', sans-serif; font-size: 10.5pt; font-weight: 600; line-height: 1.25; margin-bottom: 3px; }
+    h4 { font-family: 'Space Grotesk', sans-serif; font-size: 9pt; font-weight: 600; margin-bottom: 2px; }
+    .accent { color: var(--accent); }
+    .muted { color: var(--muted); }
+    .green { color: var(--green); }
+    em { font-style: italic; color: var(--accent); }
+    strong { font-weight: 600; }
+
+    /* ── Utility ── */
+    .flex { display: flex; }
+    .gap-sm { gap: 6px; }
+    .gap-md { gap: 12px; }
+    .gap-lg { gap: 20px; }
+    .wrap { flex-wrap: wrap; }
+    .col { flex-direction: column; }
+    .between { justify-content: space-between; }
+    .center { align-items: center; }
+    .grow { flex: 1; }
+
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 8px 0;
+    }
+    .divider-v {
+      width: 1px;
+      background: rgba(255,255,255,.12);
+      align-self: stretch;
+    }
+
+    /* ── Section label ── */
+    .sec-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 7pt;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .sec-label::before {
+      content: '';
+      display: inline-block;
+      width: 24px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    /* ── Chips / Tags ── */
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 7pt;
+      font-weight: 500;
+      letter-spacing: .5px;
+      background: rgba(255,255,255,.06);
+      color: var(--muted);
+      border: 1px solid var(--border);
+    }
+    .tag.gold {
+      background: rgba(251,191,36,.12);
+      color: var(--accent);
+      border-color: rgba(251,191,36,.25);
+    }
+    .tag.green-tag {
+      background: rgba(52,211,153,.1);
+      color: var(--green);
+      border-color: rgba(52,211,153,.2);
+    }
+
+    /* ── Stat box ── */
+    .stat-box {
+      text-align: center;
+      padding: 6px 10px;
+    }
+    .stat-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 20pt;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 7pt;
+      color: var(--muted);
+      margin-top: 2px;
+      line-height: 1.3;
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+    .card-sm {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 7px 10px;
+    }
+
+    /* ── Timeline mini ── */
+    .tl-item {
+      display: flex;
+      gap: 8px;
+      padding: 4px 0;
+    }
+    .tl-year {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 8pt;
+      font-weight: 600;
+      color: var(--accent);
+      min-width: 52px;
+      flex-shrink: 0;
+    }
+    .tl-org {
+      font-size: 7.5pt;
+      color: var(--muted);
+    }
+    .tl-title {
+      font-size: 8.5pt;
+      font-weight: 600;
+      color: var(--text);
+    }
+    .tl-badges {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      margin-top: 2px;
+    }
+
+    /* ── Case Study section ── */
+    .cs-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 10px;
+    }
+    .cs-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18pt;
+      flex-shrink: 0;
+    }
+
+    .story-step {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 5px;
+    }
+    .story-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 7pt;
+      font-weight: 700;
+      color: var(--accent);
+      background: rgba(251,191,36,.1);
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* ── Callout ── */
+    .callout {
+      background: rgba(251,191,36,.06);
+      border-left: 3px solid var(--accent);
+      padding: 6px 10px;
+      border-radius: 0 6px 6px 0;
+      font-size: 8pt;
+      margin-top: 6px;
+    }
+
+    /* ── Footer ── */
+    .page-footer {
+      position: absolute;
+      bottom: 10mm;
+      left: 16mm;
+      right: 16mm;
+      display: flex;
+      justify-content: space-between;
+      font-size: 6.5pt;
+      color: rgba(255,255,255,.25);
+    }
+
+    /* ── Skills grid ── */
+    .skills-grid { 
+      display: grid; 
+      grid-template-columns: 1fr 1fr; 
+      gap: 6px; 
+    }
+    .skill-group h4 {
+      margin-bottom: 4px;
+      font-size: 8pt;
+    }
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 3px;
+    }
+    .skill-tag {
+      font-size: 7pt;
+      padding: 2px 6px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      color: var(--muted);
+    }
+
+    /* ── Results grid ── */
+    .results-row {
+      display: flex;
+      gap: 8px;
+    }
+    .result-item {
+      flex: 1;
+      text-align: center;
+      padding: 8px 6px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+    .result-big {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 16pt;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+    }
+    .result-label {
+      font-size: 7pt;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* ── Contact ── */
+    .contact-row {
+      display: flex;
+      gap: 10px;
+    }
+    .contact-item {
+      flex: 1;
+      padding: 8px 10px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      text-align: center;
+    }
+    .contact-item .label {
+      font-size: 7pt;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+    .contact-item .value {
+      font-size: 8.5pt;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    /* ── Failure card ── */
+    .failure-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 7px 10px;
+      margin-bottom: 5px;
+    }
+    .failure-title {
+      font-weight: 600;
+      font-size: 8.5pt;
+    }
+    .failure-fix {
+      margin-top: 3px;
+      padding-top: 3px;
+      border-top: 1px solid var(--border);
+      font-size: 7.5pt;
+    }
+
+    /* ── Portfolio link banner ── */
+    .portfolio-banner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 8px 16px;
+      background: linear-gradient(135deg, rgba(251,191,36,.12), rgba(251,191,36,.04));
+      border: 1px solid rgba(251,191,36,.25);
+      border-radius: 8px;
+      margin-bottom: 12px;
+      text-decoration: none;
+    }
+    .portfolio-banner:hover { background: rgba(251,191,36,.18); }
+    .portfolio-banner .pb-icon {
+      font-size: 14pt;
+    }
+    .portfolio-banner .pb-text {
+      font-size: 8.5pt;
+      color: var(--muted);
+    }
+    .portfolio-banner .pb-url {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 9pt;
+      font-weight: 600;
+      color: var(--accent);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .portfolio-banner .pb-arrow {
+      font-size: 10pt;
+      color: var(--accent);
+    }
+
+    /* ── Links ── */
+    a { color: inherit; text-decoration: none; }
+    a.link-url {
+      color: var(--accent);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .footer-url {
+      color: rgba(251,191,36,.4);
+      text-decoration: none;
+    }
+
+    /* Print overrides */
+    @media print {
+      body { background: var(--bg) !important; }
+      .page { box-shadow: none; }
+    }
+    @media screen {
+      body { display: flex; flex-direction: column; align-items: center; gap: 20px; padding: 20px 0; }
+      .page { box-shadow: 0 4px 40px rgba(0,0,0,.5); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════ PAGE 1: PROFILE ═══════════════════════════════════════════ -->
+<div class="page">
+  <!-- Header -->
+  <div class="flex between center" style="margin-bottom: 14px;">
+    <div>
+      <div style="font-size: 7pt; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px;">Game Designer · Product Owner</div>
+      <h1>Minh <span class="accent">Bach</span></h1>
+      <div style="font-size: 9.5pt; color: var(--muted); margin-top: 4px; max-width: 420px;">
+        Systems That Play. Products That Last.
+      </div>
+    </div>
+    <div style="text-align: right;">
+      <div style="font-size: 8pt; color: var(--muted);">Ho Chi Minh City, Vietnam</div>
+      <a href="mailto:bachlapminh140395@gmail.com" class="link-url" style="font-size: 8pt; display:block; margin-top: 2px;">bachlapminh140395@gmail.com</a>
+      <a href="https://linkedin.com/in/minhbach" class="link-url" style="font-size: 8pt; display:block; margin-top: 2px; color: var(--muted); text-decoration: none;">linkedin.com/in/minhbach</a>
+    </div>
+  </div>
+
+  <!-- Full Portfolio Banner -->
+  <a href="https://bachlapminh.github.io/my-profile/" class="portfolio-banner" target="_blank">
+    <span class="pb-icon">🌐</span>
+    <span class="pb-text">Full Interactive Portfolio with Case Studies →</span>
+    <span class="pb-url">bachlapminh.github.io/my-profile</span>
+    <span class="pb-arrow">↗</span>
+  </a>
+
+  <!-- Stats bar -->
+  <div class="card" style="margin-bottom: 12px;">
+    <div class="flex between center">
+      <div class="stat-box">
+        <div class="stat-num">8<span style="font-size:12pt">+</span></div>
+        <div class="stat-label">Years in<br>Game Industry</div>
+      </div>
+      <div class="divider-v"></div>
+      <div class="stat-box">
+        <div class="stat-num">5<span style="font-size:12pt">+</span></div>
+        <div class="stat-label">Organizations<br>& Studios</div>
+      </div>
+      <div class="divider-v"></div>
+      <div class="stat-box">
+        <div class="stat-num">10<span style="font-size:12pt">+</span></div>
+        <div class="stat-label">Hardcore<br>Products</div>
+      </div>
+      <div class="divider-v"></div>
+      <div class="stat-box">
+        <div class="stat-num">3<span style="font-size:12pt">+</span></div>
+        <div class="stat-label">Industry<br>Awards</div>
+      </div>
+      <div class="divider-v"></div>
+      <div class="stat-box">
+        <div class="stat-num" style="font-size:14pt">20K</div>
+        <div class="stat-label">Peak DAU<br>Achieved</div>
+      </div>
+      <div class="divider-v"></div>
+      <div class="stat-box">
+        <div class="stat-num" style="font-size:14pt">$1.5M+</div>
+        <div class="stat-label">1st Month<br>Revenue</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- About -->
+  <div class="sec-label">Who I Am</div>
+  <p style="margin-bottom: 8px; font-size: 8.5pt; max-width: 95%;">
+    Game Designer & Product Owner with 8+ years shaping MMORPG systems — from core mechanics and economy design to full product ownership. I started in QA, moved through Operations and Live-Ops, and now lead game design. This journey gave me the ability to <strong>design systems that survive real players, real economies, and real deadlines.</strong>
+  </p>
+
+  <div class="flex gap-md" style="margin-bottom: 12px;">
+    <div class="card-sm grow">
+      <h4>⚙️ Systems Thinker</h4>
+      <p style="font-size: 7.5pt; color: var(--muted);">Interconnected gameplay mechanics — quests, skills, economy, combat — that scale with the player base.</p>
+    </div>
+    <div class="card-sm grow">
+      <h4>📊 Data-Shaped</h4>
+      <p style="font-size: 7.5pt; color: var(--muted);">Every design decision informed by real player behavior and measurable outcomes.</p>
+    </div>
+    <div class="card-sm grow">
+      <h4>🎯 Product-Minded</h4>
+      <p style="font-size: 7.5pt; color: var(--muted);">I own the product vision — from concept to launch to post-launch tuning.</p>
+    </div>
+  </div>
+
+  <!-- Journey Timeline -->
+  <div class="sec-label">Career Journey</div>
+  <div class="card" style="padding: 8px 12px;">
+    <div class="tl-item">
+      <div class="tl-year">2017</div>
+      <div>
+        <div class="tl-org">Collaboration · Travian</div>
+        <div class="tl-title">The Start — How Players Play the Game</div>
+        <div style="font-size: 7.5pt; color: var(--muted);">Player behavior monitoring, QA, customer support. Foundation of understanding player exploits.</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="tl-item">
+      <div class="tl-year">2018–19</div>
+      <div>
+        <div class="tl-org">Game Op & Design · Yulgang Private</div>
+        <div class="tl-title">The Build-Up — How a Product Runs</div>
+        <div style="font-size: 7.5pt; color: var(--muted);">Solo founder & designer. 780 CCU, 65% RR7. Systems later adopted by other servers.</div>
+        <div class="tl-badges">
+          <span class="tag">780 CCU</span>
+          <span class="tag">RR7 65%</span>
+          <span class="tag gold">Shifted player mindset</span>
+        </div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="tl-item">
+      <div class="tl-year">2020</div>
+      <div>
+        <div class="tl-org">Game Operation · SOHAGAMES</div>
+        <div class="tl-title">The Foundation — How to Work as an Organization</div>
+        <div style="font-size: 7.5pt; color: var(--muted);">Live operations, data-driven improvements. Transformed intuition into structured methodology.</div>
+        <div class="tl-badges">
+          <span class="tag gold">110%+ KPI × 10 months</span>
+          <span class="tag">Best Project 2020</span>
+          <span class="tag gold">★ Outstanding Employee</span>
+        </div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="tl-item">
+      <div class="tl-year">2021</div>
+      <div>
+        <div class="tl-org">Live-Ops Design · ATEAM Vietnam</div>
+        <div class="tl-title">The Acceleration — Beyond Operation</div>
+        <div style="font-size: 7.5pt; color: var(--muted);">First structured game design at scale. Discovered a long-standing balance bug via deep gacha data analysis.</div>
+        <div class="tl-badges"><span class="tag gold">★ Promising Employee 2021</span></div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="tl-item">
+      <div class="tl-year" style="color: var(--green);">2022–25</div>
+      <div>
+        <div class="tl-org">Game Design Lead · GihOt Studio</div>
+        <div class="tl-title">The Reward — Silkroad Online Origin Mobile</div>
+        <div style="font-size: 7.5pt; color: var(--muted);">Full product ownership. Designed all core systems. Reverse-engineered the original PC combat formula. Led design team through 21 months. Triple win at Vietnam Game Awards 2025.</div>
+        <div class="tl-badges">
+          <span class="tag gold">🏆 Game of the Year</span>
+          <span class="tag gold">🏆 Best Gameplay</span>
+          <span class="tag gold">🏆 Best Graphics</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>Minh Bach — Portfolio Summary</span>
+    <span><a href="https://bachlapminh.github.io/my-profile/" class="footer-url">bachlapminh.github.io/my-profile</a> · Page 1 / 4</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════ PAGE 2: SILKROAD ═══════════════════════════════════════════ -->
+<div class="page">
+  <div class="cs-header">
+    <div class="cs-icon">🗡️</div>
+    <div>
+      <div class="flex gap-sm center wrap">
+        <span class="tag gold">Flagship Project</span>
+        <span class="tag">Company Project</span>
+        <span class="tag">Oct 2022 → Jul 2024</span>
+        <span class="tag">Product Owner & Game Design Lead</span>
+      </div>
+      <h2 style="margin-top:4px;">Silkroad Online Origin Mobile</h2>
+      <div style="font-size: 8.5pt; color: var(--muted);"><em>Designing Without a Blueprint.</em> — Rebuild a beloved 2004 PC MMORPG for mobile with no design docs, no formula, and a team of ≤ 3 designers.</div>
+    </div>
+  </div>
+
+  <!-- Context -->
+  <div class="sec-label">Context</div>
+  <p style="font-size: 8pt; margin-bottom: 6px;">Silkroad Online (2004, Joymax) was a cultural reference point for an entire generation of Southeast Asian gamers. The task: faithfully rebuild it for mobile. The conditions made it far from a standard port — no design docs, no formula, proprietary engine, and 20 years of community reverse-engineering that <strong>still hadn't fully cracked the original combat formula.</strong></p>
+
+  <!-- Challenge -->
+  <div class="sec-label">The Real Challenge</div>
+  <div class="flex gap-md" style="margin-bottom: 8px;">
+    <div class="card-sm grow">
+      <div style="font-size: 7pt; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px;">Surface Problem</div>
+      <h4>Rebuild a beloved game for mobile.</h4>
+      <p style="font-size: 7.5pt; color: var(--muted);">Port systems, adapt UX for touch, preserve the original. Straightforward — if you have the original designer's reasoning.</p>
+    </div>
+    <div class="card-sm grow">
+      <div style="font-size: 7pt; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 1px;">Actual Problem</div>
+      <h4>Decode intent from 20-year-old decisions.</h4>
+      <p style="font-size: 7.5pt; color: var(--muted);">No author to ask. Understanding <em style="color:var(--text)">why</em> those systems were built that way — and whether that reasoning still held — was the real challenge.</p>
+    </div>
+  </div>
+
+  <!-- Reverse Engineering -->
+  <div class="sec-label">Reverse Engineering the Formula</div>
+  <div style="margin-bottom: 8px;">
+    <div class="story-step">
+      <div class="story-num">1</div>
+      <div><strong>Collected all community attempts</strong> — aggregated every formula variant from forums, wikis, and spreadsheets spanning 20 years. Mapped where each was accurate and where it broke.</div>
+    </div>
+    <div class="story-step">
+      <div class="story-num">2</div>
+      <div><strong>Playtested and recorded all variables</strong> — controlled testing across multiple character builds. Built the raw empirical dataset no community attempt had done systematically.</div>
+    </div>
+    <div class="story-step">
+      <div class="story-num">3</div>
+      <div><strong>Ran induction and interpolation loops</strong> — treated data as a convergence problem. Iterate until the formula held across the full stat range.</div>
+    </div>
+    <div class="story-step">
+      <div class="story-num">4</div>
+      <div><strong>Honest disclosure to team: ~90% accuracy at launch.</strong> Disclosed uncertainty before launch — not hidden. Real player data refined it to 100% within 2-3 months live.</div>
+    </div>
+  </div>
+
+  <!-- Economy -->
+  <div class="sec-label">Economy Design Philosophy</div>
+  <p style="font-size: 8pt; margin-bottom: 6px;">In a free-trade MMORPG, the economy <strong>is</strong> the core loop. Central question: <em style="color: var(--text)">"What do I get for 1 hour of grinding?"</em> — with the answer changing across the player journey:</p>
+  <div class="flex gap-sm" style="margin-bottom: 8px;">
+    <div class="card-sm grow" style="text-align:center;">
+      <div style="font-size: 7pt; font-weight: 600; color: var(--green);">EARLY · Hook Phase</div>
+      <div style="font-size: 7.5pt; color: var(--muted);">High reward density → fast progression feel. Establish the loop before investment.</div>
+    </div>
+    <div class="card-sm grow" style="text-align:center;">
+      <div style="font-size: 7pt; font-weight: 600; color: var(--accent);">MID · Investment Phase</div>
+      <div style="font-size: 7.5pt; color: var(--muted);">Rewards become meaningful. Drop density decreases, perceived value increases.</div>
+    </div>
+    <div class="card-sm grow" style="text-align:center;">
+      <div style="font-size: 7pt; font-weight: 600; color: #a78bfa;">LATE · Ecosystem Phase</div>
+      <div style="font-size: 7.5pt; color: var(--muted);">Rare items as goals → trading activity → living market economy.</div>
+    </div>
+  </div>
+
+  <!-- What Broke -->
+  <div class="sec-label">What Broke (Transparent Failures)</div>
+  <div style="font-size: 8pt; margin-bottom: 5px;">
+    <div class="failure-card">
+      <div class="failure-title">⚔️ Combat Edge Cases</div>
+      <div style="font-size: 7.5pt; color: var(--muted);">Rare stat combos fell outside formula range post-launch. <span style="color: var(--green);">Fix → Surgical per-case fixes, not full formula rebuild.</span></div>
+    </div>
+    <div class="failure-card">
+      <div class="failure-title">🤖 Bot Farm Monetization Exploit</div>
+      <div style="font-size: 7.5pt; color: var(--muted);">Bot farms recovered 180% of invested currency in 30 days. Economic model assumed human behavior. <span style="color: var(--green);">Fix → Split currencies, rebalanced return ratios.</span></div>
+    </div>
+    <div class="failure-card">
+      <div class="failure-title">📉 Rare Item Inflation</div>
+      <div style="font-size: 7.5pt; color: var(--muted);">Even 0.01% drop rate becomes a supply problem at bot-scale volume. <span style="color: var(--green);">Fix → Structural supply controls for non-human volume.</span></div>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="sec-label">Results</div>
+  <div class="results-row">
+    <div class="result-item"><div class="result-big">21</div><div class="result-label">Months in Production</div></div>
+    <div class="result-item"><div class="result-big" style="font-size:12pt">≤ 3</div><div class="result-label">GD Team Size</div></div>
+    <div class="result-item"><div class="result-big">20.4%</div><div class="result-label">D30 Retention</div></div>
+    <div class="result-item"><div class="result-big" style="font-size:12pt">$1.5M+</div><div class="result-label">Revenue — Month 1</div></div>
+    <div class="result-item"><div class="result-big" style="font-size:12pt">🏆×3</div><div class="result-label">VN Game Awards</div></div>
+  </div>
+
+  <div class="page-footer">
+    <span>Minh Bach — Portfolio Summary</span>
+    <span><a href="https://bachlapminh.github.io/my-profile/" class="footer-url">bachlapminh.github.io/my-profile</a> · Page 2 / 4</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════ PAGE 3: YULGANG ═══════════════════════════════════════════ -->
+<div class="page">
+  <div class="cs-header">
+    <div class="cs-icon">⚔️</div>
+    <div>
+      <div class="flex gap-sm center wrap">
+        <span class="tag gold">Featured Individual Project</span>
+        <span class="tag">Personal Project</span>
+        <span class="tag">2017 → 2018</span>
+        <span class="tag">Solo Designer + Product Owner</span>
+      </div>
+      <h2 style="margin-top:4px;">Yulgang Private Server — Hiệp Khách Giang Hồ</h2>
+      <div style="font-size: 8.5pt; color: var(--muted);"><em>Reshape the culture. Rewrite the game.</em> — A community-run MMORPG server I took from zero to 780 CCU through design innovation.</div>
+    </div>
+  </div>
+
+  <!-- Context -->
+  <div class="sec-label">Background</div>
+  <p style="font-size: 8pt; margin-bottom: 4px;">Yulgang (MGame / VTC Vietnam) private server community. I entered as a player in 2017, moved through QA/QC into partner role, and ultimately took full ownership of game design and product decisions.</p>
+  <div class="flex gap-sm wrap" style="margin-bottom: 8px;">
+    <span class="tag">2017 · Player & Observer</span>
+    <span class="tag">2017 · QA/QC</span>
+    <span class="tag">2018 · Partner — Events & Ops</span>
+    <span class="tag gold">2018 · Game Designer + PO</span>
+  </div>
+
+  <!-- Challenge -->
+  <div class="sec-label">The Challenge</div>
+  <div class="flex gap-md" style="margin-bottom: 8px;">
+    <div class="card-sm grow">
+      <h4>⚠️ A Scene Frozen in Convention</h4>
+      <p style="font-size: 7.5pt; color: var(--muted);">Every private server followed the same formula — same systems, same events, same player loops. Innovation was absent. Rapid churn, bored community.</p>
+    </div>
+    <div class="card-sm grow">
+      <h4>🧪 Design as Laboratory</h4>
+      <p style="font-size: 7.5pt; color: var(--muted);">Two principles: challenge outdated mindsets, treat each iteration as an A/B test. Willing to fail publicly before finding what worked.</p>
+    </div>
+  </div>
+
+  <!-- Two Phases -->
+  <div class="sec-label">Two Phases of Learning</div>
+  <div class="flex gap-md" style="margin-bottom: 8px;">
+    <div class="card grow">
+      <div style="font-size: 7pt; font-weight: 600; color: var(--accent); letter-spacing: 1px;">PHASE 01 — BURN-THROUGH SERVER</div>
+      <p style="font-size: 8pt; margin-top: 3px;">Recalibrating ratios, stats, and values for a more engaging experience. Incremental. Precise. Player-tested.</p>
+      <div style="font-size: 7.5pt; color: var(--green); margin-top: 3px;">📖 Learned: How to read what players need — not just what they say they want.</div>
+    </div>
+    <div class="card grow">
+      <div style="font-size: 7pt; font-weight: 600; color: var(--muted); letter-spacing: 1px;">PHASE 02 — EXPERIMENTAL SERVER</div>
+      <p style="font-size: 8pt; margin-top: 3px;">Radical experimentation — modifying core to embed ideas from Phong Thần, Võ Lâm, Kiếm Thế, MU, and Laplace M.</p>
+      <div style="font-size: 7.5pt; color: var(--green); margin-top: 3px;">📖 Learned: How to create experiences that didn't exist yet — and get a community to follow.</div>
+    </div>
+  </div>
+
+  <!-- Design Decisions -->
+  <div class="sec-label">Three Key Design Decisions</div>
+  
+  <div class="card" style="margin-bottom: 6px; padding: 8px 12px;">
+    <div class="flex between center" style="margin-bottom: 4px;">
+      <h3 style="margin: 0;">01 / Circulatory Quest System</h3>
+      <span class="tag gold">Signature Design</span>
+    </div>
+    <p style="font-size: 8pt; margin-bottom: 4px;">Most servers disabled the quest system entirely. When a developer accidentally left it active, I saw <strong>not a bug, but a structure</strong> — cyclical, repeatable loops that create daily habits. I refocused rewards: removed XP, added power-enhancing buffs with long-term value.</p>
+    <div class="callout"><strong>This is game design:</strong> not inventing from scratch, but seeing what's already there and understanding it better than anyone else.</div>
+  </div>
+
+  <div class="card" style="margin-bottom: 6px; padding: 8px 12px;">
+    <div class="flex between center" style="margin-bottom: 4px;">
+      <h3 style="margin: 0;">02 / Dungeon Resource Distribution</h3>
+      <span class="tag gold">Industry Influence</span>
+    </div>
+    <p style="font-size: 8pt; margin-bottom: 4px;">Killed auto-bot culture by tightening open-world resources and redistributing into dungeons — requiring active participation. Extra entries became a monetization lever. Community interaction increased as dungeons became shared content.</p>
+    <div class="callout">📊 <strong>From 2023, ~80% of Vietnamese private servers adopted this dungeon-based model.</strong> This server set the pattern.</div>
+  </div>
+
+  <div class="card" style="margin-bottom: 8px; padding: 8px 12px;">
+    <div class="flex between center" style="margin-bottom: 4px;">
+      <h3 style="margin: 0;">03 / Celestial-Demonic Weapons</h3>
+      <span class="tag gold">Ahead of Official</span>
+    </div>
+    <p style="font-size: 8pt; margin-bottom: 4px;">Designed a weapon tier requiring level 160 — a hard wall forcing full progression before unlocking special material farming. The ultimate weapon became a community status symbol and long-term aspiration.</p>
+    <div class="callout">🏆 <strong>In 2021 — three years later — Yulgang Official introduced a similar level-160 system.</strong> The private server designed ahead of the official game.</div>
+  </div>
+
+  <!-- Results -->
+  <div class="sec-label">Results</div>
+  <div class="results-row">
+    <div class="result-item"><div class="result-big">780</div><div class="result-label">Peak CCU<br>from zero</div></div>
+    <div class="result-item"><div class="result-big">65%</div><div class="result-label">Day-7 Ret.<br>Rate</div></div>
+    <div class="result-item"><div class="result-big">2×</div><div class="result-label">Industry<br>firsts</div></div>
+    <div class="result-item"><div class="result-big">3+</div><div class="result-label">Years active<br>community</div></div>
+  </div>
+
+  <div class="page-footer">
+    <span>Minh Bach — Portfolio Summary</span>
+    <span><a href="https://bachlapminh.github.io/my-profile/" class="footer-url">bachlapminh.github.io/my-profile</a> · Page 3 / 4</span>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════ PAGE 4: DARK SUMMONER + SKILLS + CONTACT ═══════════════════════════════════════════ -->
+<div class="page">
+  <!-- Dark Summoner -->
+  <div class="cs-header">
+    <div class="cs-icon">👹</div>
+    <div>
+      <div class="flex gap-sm center wrap">
+        <span class="tag">Supporting Case Study</span>
+        <span class="tag">Live Ops Design</span>
+        <span class="tag">GihOt Studio · 2022–2023</span>
+      </div>
+      <h2 style="margin-top:4px;">Dark Summoner — Live System Optimization</h2>
+      <div style="font-size: 8.5pt; color: var(--muted);"><em>Optimize the live system. Build the structure that was missing.</em></div>
+    </div>
+  </div>
+
+  <div class="flex gap-md" style="margin-bottom: 4px;">
+    <div class="card-sm grow">
+      <h4>Problems Inherited</h4>
+      <p style="font-size: 7.5pt; color: var(--muted);">No centralized metrics framework. Reward inflation from unstructured legacy events. Undocumented hero balance logic making new content risky.</p>
+    </div>
+    <div class="card-sm grow">
+      <h4>What I Did</h4>
+      <p style="font-size: 7.5pt; color: var(--muted);">Built a metrics framework for the GD team. Restructured the live event model (cut reward inflation, consistent player expectation). Reverse-engineered and documented the balance formula for stable future updates.</p>
+    </div>
+    <div class="card-sm grow">
+      <h4>Why It Mattered</h4>
+      <p style="font-size: 7.5pt; color: var(--muted);">Events became repeatable without escalation. New hero releases became predictable. The GD team gained a structured decision-making framework they didn't have before.</p>
+    </div>
+  </div>
+
+  <div class="callout" style="margin-bottom: 14px;">
+    <strong>Key lesson:</strong> Read before writing. When inheriting a live product, the first task is understanding the previous designer's intent — even without explanation. Structure is a feature. Constraints clarify priorities.
+  </div>
+
+  <div class="divider" style="margin: 12px 0;"></div>
+
+  <!-- Skills & Methods -->
+  <div class="sec-label">Skills & Methods</div>
+  <div class="skills-grid" style="margin-bottom: 10px;">
+    <div class="skill-group card-sm">
+      <h4>🎮 Design</h4>
+      <div class="skill-tags">
+        <span class="skill-tag">Gameplay Systems</span>
+        <span class="skill-tag">Economy Design</span>
+        <span class="skill-tag">Combat Balance</span>
+        <span class="skill-tag">Content Design</span>
+        <span class="skill-tag">Progression Systems</span>
+        <span class="skill-tag">Reward Design</span>
+        <span class="skill-tag">Quest Design</span>
+        <span class="skill-tag">UX/UI Wireframing</span>
+      </div>
+    </div>
+    <div class="skill-group card-sm">
+      <h4>📊 Methods</h4>
+      <div class="skill-tags">
+        <span class="skill-tag">Data Analysis</span>
+        <span class="skill-tag">A/B Testing</span>
+        <span class="skill-tag">Live Ops</span>
+        <span class="skill-tag">Player Research</span>
+        <span class="skill-tag">Reverse Engineering</span>
+        <span class="skill-tag">Agile / Scrum</span>
+        <span class="skill-tag">Product Roadmap</span>
+        <span class="skill-tag">Stakeholder Mgmt</span>
+      </div>
+    </div>
+    <div class="skill-group card-sm">
+      <h4>🛠️ Tools</h4>
+      <div class="skill-tags">
+        <span class="skill-tag">Excel / Sheets</span>
+        <span class="skill-tag">Jira / Trello</span>
+        <span class="skill-tag">Figma</span>
+        <span class="skill-tag">Confluence</span>
+        <span class="skill-tag">SQL</span>
+        <span class="skill-tag">Analytics Platforms</span>
+        <span class="skill-tag">Miro</span>
+        <span class="skill-tag">Unity (basic)</span>
+      </div>
+    </div>
+    <div class="skill-group card-sm">
+      <h4>🌐 Domains</h4>
+      <div class="skill-tags">
+        <span class="skill-tag">MMORPG</span>
+        <span class="skill-tag">Mobile Games</span>
+        <span class="skill-tag">Free-to-Play</span>
+        <span class="skill-tag">PC-to-Mobile Port</span>
+        <span class="skill-tag">Gacha / RPG</span>
+        <span class="skill-tag">Live Service</span>
+        <span class="skill-tag">SEA Market</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider" style="margin: 10px 0;"></div>
+
+  <!-- Collaboration -->
+  <div class="sec-label">What I Can Do For You</div>
+  <div class="flex gap-sm" style="margin-bottom: 10px;">
+    <div class="card-sm grow" style="text-align:center;">
+      <h4>🎮 Full Game Design</h4>
+      <p style="font-size: 7pt; color: var(--muted);">End-to-end system design<br>for new or existing titles</p>
+    </div>
+    <div class="card-sm grow" style="text-align:center;">
+      <h4>⚖️ Economy & Balance</h4>
+      <p style="font-size: 7pt; color: var(--muted);">Audit and rebalance live<br>game economies & monetization</p>
+    </div>
+    <div class="card-sm grow" style="text-align:center;">
+      <h4>📱 PC-to-Mobile</h4>
+      <p style="font-size: 7pt; color: var(--muted);">Translate PC experiences<br>to mobile — not just porting</p>
+    </div>
+    <div class="card-sm grow" style="text-align:center;">
+      <h4>🗺️ Product Strategy</h4>
+      <p style="font-size: 7pt; color: var(--muted);">Product vision, roadmap,<br>backlog & stakeholder alignment</p>
+    </div>
+  </div>
+
+  <div class="divider" style="margin: 10px 0;"></div>
+
+  <!-- Contact -->
+  <div class="sec-label">Let's Connect</div>
+  <div style="font-size: 8.5pt; color: var(--muted); margin-bottom: 8px;">
+    I'm always up for conversations about game design, product strategy, and the weird joys of balancing an in-game economy at 2 AM.
+  </div>
+  <div class="contact-row">
+    <a href="mailto:lapbach.minh@gmail.com" class="contact-item" style="text-decoration:none;">
+      <div class="label">Email</div>
+      <div class="value">lapbach.minh@gmail.com</div>
+    </a>
+    <a href="https://linkedin.com/in/minhbach" class="contact-item" style="text-decoration:none;" target="_blank">
+      <div class="label">LinkedIn</div>
+      <div class="value">linkedin.com/in/minhbach</div>
+    </a>
+    <div class="contact-item">
+      <div class="label">Phone / Zalo</div>
+      <div class="value">+84 (on request)</div>
+    </div>
+    <div class="contact-item">
+      <div class="label">Location</div>
+      <div class="value">HCM City, Vietnam</div>
+    </div>
+  </div>
+
+  <!-- Full Portfolio CTA -->
+  <a href="https://bachlapminh.github.io/my-profile/" class="portfolio-banner" target="_blank" style="margin-top: 10px; margin-bottom: 0;">
+    <span class="pb-icon">🌐</span>
+    <span class="pb-text">View Full Interactive Portfolio →</span>
+    <span class="pb-url">bachlapminh.github.io/my-profile</span>
+    <span class="pb-arrow">↗</span>
+  </a>
+
+  <div class="page-footer">
+    <span>Minh Bach — Portfolio Summary · © 2026</span>
+    <span><a href="https://bachlapminh.github.io/my-profile/" class="footer-url">bachlapminh.github.io/my-profile</a> · Page 4 / 4</span>
+  </div>
+</div>
+
+</body>
+</html>
