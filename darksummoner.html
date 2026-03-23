@@ -228,7 +228,7 @@
           <span class="bc-sep">/</span>
           <span>Dark Summoner</span>
         </div>
-        <span class="cs-reading-time">~3 min read</span>
+        <span class="cs-reading-time" data-i18n="ds_reading_time">~3 min read</span>
       </div>
 
       <div class="cs-support-badge">◦ <span data-i18n="ds_support_badge">Supporting Case Study · Live System Optimization</span></div>
@@ -244,11 +244,11 @@
       <div class="cs-facts">
         <div class="cs-fact">
           <span class="cs-fact-label" data-i18n="ds_fact_role">Role</span>
-          <span class="cs-fact-value">Live Ops Designer</span>
+          <span class="cs-fact-value" data-i18n="ds_fact_role_val">Live Ops Designer</span>
         </div>
         <div class="cs-fact">
           <span class="cs-fact-label" data-i18n="ds_fact_type">Product type</span>
-          <span class="cs-fact-value">Mobile RPG (Live)</span>
+          <span class="cs-fact-value" data-i18n="ds_fact_type_val">Mobile RPG (Live)</span>
         </div>
         <div class="cs-fact">
           <span class="cs-fact-label" data-i18n="ds_fact_period">Period</span>
@@ -256,7 +256,7 @@
         </div>
         <div class="cs-fact">
           <span class="cs-fact-label" data-i18n="ds_fact_scope">Scope</span>
-          <span class="cs-fact-value">Rework + Framework</span>
+          <span class="cs-fact-value" data-i18n="ds_fact_scope_val">Rework + Framework</span>
         </div>
       </div>
     </div>
@@ -287,14 +287,14 @@
   <!-- ═══════ 01 · CONTEXT ═══════ -->
   <section id="ds-context" class="cs-section" style="background:var(--bg)">
     <div class="wrap">
-      <div class="section-label"><span class="label-line"></span><span data-i18n="ds_toc_context">01 · CONTEXT</span></div>
+      <div class="section-label"><span class="label-line"></span><span data-i18n="ds_sec01">01 · CONTEXT</span></div>
       <h2 class="section-title reveal">
-        I joined a game already running.<br>
-        <em>And stayed to fix it.</em>
+        <span data-i18n="ds_ctx_title_1">I joined a game already running.</span><br>
+        <em data-i18n="ds_ctx_title_2">And stayed to fix it.</em>
       </h2>
       <div class="cs-prose reveal">
-        <p>Dark Summoner was a mobile RPG already in live operation when I joined GihOt Studio. Not a project I built from scratch — this was a running product, with real players, real content cycles, and real problems quietly building up underneath.</p>
-        <p>My role was Live Ops Designer — not to architect core systems, but to <strong>ensure what was running continued to run better</strong>. The work required reading the previous designer's decisions, identifying what needed fixing now, and laying groundwork so future updates wouldn't create new problems.</p>
+        <p data-i18n="ds_ctx_p1">Dark Summoner was a mobile RPG already in live operation when I joined GihOt Studio. Not a project I built from scratch — this was a running product, with real players, real content cycles, and real problems quietly building up underneath.</p>
+        <p data-i18n="ds_ctx_p2">My role was Live Ops Designer — not to architect core systems, but to <strong>ensure what was running continued to run better</strong>. The work required reading the previous designer's decisions, identifying what needed fixing now, and laying groundwork so future updates wouldn't create new problems.</p>
       </div>
     </div>
   </section>
@@ -302,31 +302,31 @@
   <!-- ═══════ 02 · THE PROBLEMS ═══════ -->
   <section id="ds-problems" class="cs-section cs-section-bg">
     <div class="wrap">
-      <div class="section-label"><span class="label-line"></span><span data-i18n="ds_toc_problems">02 · THE PROBLEMS</span></div>
+      <div class="section-label"><span class="label-line"></span><span data-i18n="ds_sec02">02 · THE PROBLEMS</span></div>
       <h2 class="section-title reveal">
-        Four problems,<br>
-        <em>all solvable.</em>
+        <span data-i18n="ds_prob_title_1">Four problems,</span><br>
+        <em data-i18n="ds_prob_title_2">all solvable.</em>
       </h2>
       <div class="problem-grid reveal">
         <div class="problem-card">
           <div class="problem-card-icon">🔁</div>
-          <h4>Stale live events</h4>
-          <p>Live events had been running long past their design lifespan without mechanical updates. Players knew the outcome before they started — zero engagement.</p>
+          <h4 data-i18n="ds_prob1_h">Stale live events</h4>
+          <p data-i18n="ds_prob1_p">Live events had been running long past their design lifespan without mechanical updates. Players knew the outcome before they started — zero engagement.</p>
         </div>
         <div class="problem-card">
           <div class="problem-card-icon">🏆</div>
-          <h4>Broken reward structures</h4>
-          <p>Reward ladders no longer reflected player time-effort investment. Some modes over-rewarded, others under-rewarded — no internal system maintained the balance.</p>
+          <h4 data-i18n="ds_prob2_h">Broken reward structures</h4>
+          <p data-i18n="ds_prob2_p">Reward ladders no longer reflected player time-effort investment. Some modes over-rewarded, others under-rewarded — no internal system maintained the balance.</p>
         </div>
         <div class="problem-card">
           <div class="problem-card-icon">📊</div>
-          <h4>No design metrics framework</h4>
-          <p>The Game Design team had no shared metric set to evaluate designs against. Every decision was gut-feel — no objective reference point existed.</p>
+          <h4 data-i18n="ds_prob3_h">No design metrics framework</h4>
+          <p data-i18n="ds_prob3_p">The Game Design team had no shared metric set to evaluate designs against. Every decision was gut-feel — no objective reference point existed.</p>
         </div>
         <div class="problem-card">
           <div class="problem-card-icon">⚖️</div>
-          <h4>Undocumented balance logic</h4>
-          <p>New heroes and content were added by estimation, with no clear formula from the previous designer. Each new update introduced unpredictable balance risk.</p>
+          <h4 data-i18n="ds_prob4_h">Undocumented balance logic</h4>
+          <p data-i18n="ds_prob4_p">New heroes and content were added by estimation, with no clear formula from the previous designer. Each new update introduced unpredictable balance risk.</p>
         </div>
       </div>
     </div>
@@ -335,10 +335,10 @@
   <!-- ═══════ 03 · WHAT I DID ═══════ -->
   <section id="ds-contributions" class="cs-section" style="background:var(--bg)">
     <div class="wrap">
-      <div class="section-label"><span class="label-line"></span><span data-i18n="ds_toc_contributions">03 · WHAT I DID</span></div>
+      <div class="section-label"><span class="label-line"></span><span data-i18n="ds_sec03">03 · WHAT I DID</span></div>
       <h2 class="section-title reveal">
-        Not building from scratch.<br>
-        <em>Building what was actually missing.</em>
+        <span data-i18n="ds_contrib_title_1">Not building from scratch.</span><br>
+        <em data-i18n="ds_contrib_title_2">Building what was actually missing.</em>
       </h2>
 
       <div class="contrib-list reveal">
@@ -346,43 +346,43 @@
         <div class="contrib-item">
           <div class="contrib-num">01</div>
           <div class="contrib-body">
-            <h4>Live Event Mechanics Rework</h4>
-            <p>Analyzed each live event along two axes: engagement mechanics and reward structure. For events that had lost engagement, I redesigned trigger conditions, added secondary loops with real value, and readjusted reward flow to match the current game phase.</p>
+            <h4 data-i18n="ds_c1_h">Live Event Mechanics Rework</h4>
+            <p data-i18n="ds_c1_p">Analyzed each live event along two axes: engagement mechanics and reward structure. For events that had lost engagement, I redesigned trigger conditions, added secondary loops with real value, and readjusted reward flow to match the current game phase.</p>
             <div class="callout">
-              <p>💡 <strong>Principle:</strong> Events lose engagement not because rewards are too low — but because the mechanics have become too familiar. Change the loop, not just the number.</p>
+              <p data-i18n="ds_c1_callout">💡 <strong>Principle:</strong> Events lose engagement not because rewards are too low — but because the mechanics have become too familiar. Change the loop, not just the number.</p>
             </div>
-            <span class="contrib-highlight">🔄 Applied across 6+ active events</span>
+            <span class="contrib-highlight" data-i18n="ds_c1_badge">🔄 Applied across 6+ active events</span>
           </div>
         </div>
 
         <div class="contrib-item">
           <div class="contrib-num">02</div>
           <div class="contrib-body">
-            <h4>UI/UX &amp; Reward Structure Improvements</h4>
-            <p>Audited the interface of key systems to identify friction points: hidden reward information, unclear tier thresholds, inconsistent feedback. Restructured reward ladders in select systems to create cleaner progression perception — so players knew exactly what they were earning and what came next.</p>
-            <span class="contrib-highlight">🎯 Clarity before complexity</span>
+            <h4 data-i18n="ds_c2_h">UI/UX &amp; Reward Structure Improvements</h4>
+            <p data-i18n="ds_c2_p">Audited the interface of key systems to identify friction points: hidden reward information, unclear tier thresholds, inconsistent feedback. Restructured reward ladders in select systems to create cleaner progression perception — so players knew exactly what they were earning and what came next.</p>
+            <span class="contrib-highlight" data-i18n="ds_c2_badge">🎯 Clarity before complexity</span>
           </div>
         </div>
 
         <div class="contrib-item">
           <div class="contrib-num">03</div>
           <div class="contrib-body">
-            <h4>Design Metrics Framework</h4>
-            <p>Created an internal metric set so the Game Design team had a shared foundation when evaluating new designs. The framework covered: engagement benchmarks by system type, reward density standards by game phase, and a pre-launch event review checklist.</p>
+            <h4 data-i18n="ds_c3_h">Design Metrics Framework</h4>
+            <p data-i18n="ds_c3_p">Created an internal metric set so the Game Design team had a shared foundation when evaluating new designs. The framework covered: engagement benchmarks by system type, reward density standards by game phase, and a pre-launch event review checklist.</p>
             <div class="callout">
-              <p>📊 <strong>Why this mattered:</strong> Without a framework, each designer held a different standard. The result was inconsistent designs and prolonged reviews. A framework creates a shared language.</p>
+              <p data-i18n="ds_c3_callout">📊 <strong>Why this mattered:</strong> Without a framework, each designer held a different standard. The result was inconsistent designs and prolonged reviews. A framework creates a shared language.</p>
             </div>
-            <span class="contrib-highlight">📋 Framework became onboarding material for new designers</span>
+            <span class="contrib-highlight" data-i18n="ds_c3_badge">📋 Framework became onboarding material for new designers</span>
           </div>
         </div>
 
         <div class="contrib-item">
           <div class="contrib-num">04</div>
           <div class="contrib-body">
-            <h4>Reverse-Engineering the Legacy Balance Logic</h4>
-            <p>This was the hardest part. The previous designer left no documentation on how they calculated hero stats and power scaling. I analyzed each existing hero — stats, skills, cost — and gradually reconstructed the original formula from patterns in the data.</p>
-            <p>The output was a reusable spreadsheet for designing new heroes within relative power budget — maintaining consistency even though I hadn't created the original system.</p>
-            <span class="contrib-highlight">⚖️ Reconstructed from patterns, not documentation</span>
+            <h4 data-i18n="ds_c4_h">Reverse-Engineering the Legacy Balance Logic</h4>
+            <p data-i18n="ds_c4_p1">This was the hardest part. The previous designer left no documentation on how they calculated hero stats and power scaling. I analyzed each existing hero — stats, skills, cost — and gradually reconstructed the original formula from patterns in the data.</p>
+            <p data-i18n="ds_c4_p2">The output was a reusable spreadsheet for designing new heroes within relative power budget — maintaining consistency even though I hadn't created the original system.</p>
+            <span class="contrib-highlight" data-i18n="ds_c4_badge">⚖️ Reconstructed from patterns, not documentation</span>
           </div>
         </div>
 
@@ -393,26 +393,26 @@
   <!-- ═══════ 04 · WHY IT MATTERED ═══════ -->
   <section id="ds-impact" class="cs-section cs-section-bg">
     <div class="wrap">
-      <div class="section-label"><span class="label-line"></span><span data-i18n="ds_toc_impact">04 · WHY IT MATTERED</span></div>
+      <div class="section-label"><span class="label-line"></span><span data-i18n="ds_sec04">04 · WHY IT MATTERED</span></div>
       <h2 class="section-title reveal">
-        Optimization gets less attention.<br>
-        <em>But it's what keeps a game alive.</em>
+        <span data-i18n="ds_impact_title_1">Optimization gets less attention.</span><br>
+        <em data-i18n="ds_impact_title_2">But it's what keeps a game alive.</em>
       </h2>
       <div class="impact-grid reveal">
         <div class="impact-card">
           <div class="impact-card-icon">🔄</div>
-          <h4>Smoother operations</h4>
-          <p>Live events could be updated and deployed faster once the team had clear structure to work from.</p>
+          <h4 data-i18n="ds_imp1_h">Smoother operations</h4>
+          <p data-i18n="ds_imp1_p">Live events could be updated and deployed faster once the team had clear structure to work from.</p>
         </div>
         <div class="impact-card">
           <div class="impact-card-icon">📋</div>
-          <h4>Design consistency</h4>
-          <p>The metrics framework created shared standards — faster reviews, fewer gut-feel debates.</p>
+          <h4 data-i18n="ds_imp2_h">Design consistency</h4>
+          <p data-i18n="ds_imp2_p">The metrics framework created shared standards — faster reviews, fewer gut-feel debates.</p>
         </div>
         <div class="impact-card">
           <div class="impact-card-icon">🛡️</div>
-          <h4>Future-proofing</h4>
-          <p>The balance formula meant future heroes could be designed correctly from day one, not patched post-launch.</p>
+          <h4 data-i18n="ds_imp3_h">Future-proofing</h4>
+          <p data-i18n="ds_imp3_p">The balance formula meant future heroes could be designed correctly from day one, not patched post-launch.</p>
         </div>
       </div>
     </div>
@@ -421,29 +421,29 @@
   <!-- ═══════ 05 · LESSONS ═══════ -->
   <section id="ds-lessons" class="cs-section" style="background:var(--bg)">
     <div class="wrap">
-      <div class="section-label"><span class="label-line"></span><span data-i18n="ds_toc_lessons">05 · KEY LESSONS</span></div>
+      <div class="section-label"><span class="label-line"></span><span data-i18n="ds_sec05">05 · KEY LESSONS</span></div>
       <h2 class="section-title reveal">
-        What I carried forward.<br>
-        <em>From a game I did not create.</em>
+        <span data-i18n="ds_lesson_title_1">What I carried forward.</span><br>
+        <em data-i18n="ds_lesson_title_2">From a game I did not create.</em>
       </h2>
       <div class="lesson-list reveal">
         <div class="lesson-item">
           <span class="lesson-icon">🔍</span>
-          <p class="lesson-text">
+          <p class="lesson-text" data-i18n="ds_ls1">
             <strong>Read before writing.</strong>
             When inheriting a live product, the first task is understanding the previous designer's intent — even without explanation. Every system has logic, even when undocumented.
           </p>
         </div>
         <div class="lesson-item">
           <span class="lesson-icon">🧱</span>
-          <p class="lesson-text">
+          <p class="lesson-text" data-i18n="ds_ls2">
             <strong>Structure is a feature.</strong>
             The metrics framework is invisible to players. But it affects every design decision that follows. Sometimes the most important work is the work that can't be seen.
           </p>
         </div>
         <div class="lesson-item">
           <span class="lesson-icon">⚡</span>
-          <p class="lesson-text">
+          <p class="lesson-text" data-i18n="ds_ls3">
             <strong>Constraints clarify priorities.</strong>
             Not being able to redesign the whole game was a constraint. But it forced clarity: what needs fixing now, what can wait. This is a necessary skill for any live product.
           </p>
