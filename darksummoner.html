@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dark Summoner — Live System Optimization · Minh Bach</title>
+  <meta name="description" content="How I reworked outdated live systems, built a design metrics framework, and reverse-engineered legacy balance logic for a live mobile RPG.">
+  <meta property="og:title" content="Dark Summoner — Case Study by Minh Bach">
+  <meta property="og:description" content="Supporting case study: live system optimization, event rework, and balance stabilization for a running mobile RPG.">
+  <meta property="og:type" content="article">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=3">
+  <script src="js/i18n.js"></script>
+  <style>
+    #readingProgress {
+      position: fixed; top: 0; left: 0;
+      height: 2px; width: 0%;
+      background: linear-gradient(90deg, var(--gold-dk), var(--gold), var(--gold-lt));
+      z-index: 9999;
+      transition: width 0.1s linear;
+    }
+
+    .cs-hero {
+      min-height: 60vh;
+      display: flex;
+      align-items: flex-end;
+      padding: 7rem var(--px) 3.5rem;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(165deg, #0B1218 0%, #111820 50%, #0d1019 100%);
+    }
+    .cs-hero::before {
+      content: '';
+      position: absolute;
+      top: -15%; right: -10%;
+      width: 70vw; height: 70vw;
+      max-width: 800px; max-height: 800px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(242,201,76,0.07) 0%, rgba(180,140,30,0.03) 40%, transparent 70%);
+      pointer-events: none;
+    }
+    .cs-hero-content { max-width: var(--max-w); margin: 0 auto; width: 100%; position: relative; z-index: 2; }
+
+    .cs-breadcrumb {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 0.75rem;
+      font-family: var(--f-mono); font-size: 0.65rem;
+      letter-spacing: 0.08em; color: var(--text3);
+      margin-bottom: 2rem;
+      opacity: 0; animation: fadeUp 0.7s var(--ease) 0.1s forwards;
+    }
+    .cs-breadcrumb a { color: var(--text3); transition: color 0.2s; }
+    .cs-breadcrumb a:hover { color: var(--gold); }
+    .cs-breadcrumb .bc-accent { color: var(--gold); }
+    .bc-sep { margin: 0 0.5rem; opacity: 0.4; }
+    .cs-reading-time { font-family: var(--f-mono); font-size: 0.6rem; color: var(--text3); letter-spacing: 0.08em; }
+
+    .cs-eyebrow {
+      display: flex; align-items: center; gap: 0.75rem;
+      font-family: var(--f-mono); font-size: 0.65rem;
+      letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold);
+      margin-bottom: 1rem;
+      opacity: 0; animation: fadeUp 0.7s var(--ease) 0.2s forwards;
+    }
+    .cs-eyebrow-line { display: block; width: 2.5rem; height: 1px; background: var(--gold); }
+
+    .cs-support-badge {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-family: var(--f-mono); font-size: 0.55rem; letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold-dk); background: rgba(242,201,76,0.07);
+      border: 1px solid rgba(242,201,76,0.2);
+      padding: 0.3rem 0.65rem; border-radius: 4px;
+      margin-bottom: 1.15rem;
+      opacity: 0; animation: fadeUp 0.7s var(--ease) 0.15s forwards;
+    }
+
+    .cs-title {
+      font-family: var(--f-display);
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700; line-height: 0.97;
+      letter-spacing: -0.02em; color: var(--text);
+      margin-bottom: 0.85rem;
+      opacity: 0; animation: fadeUp 0.7s var(--ease) 0.32s forwards;
+    }
+    .cs-subtitle {
+      font-family: var(--f-display);
+      font-size: clamp(0.95rem, 1.9vw, 1.2rem);
+      font-weight: 500; font-style: italic; color: var(--gold);
+      margin-bottom: 2rem;
+      opacity: 0; animation: fadeUp 0.7s var(--ease) 0.46s forwards;
+      letter-spacing: -0.01em;
+    }
+
+    .cs-facts {
+      display: flex; flex-wrap: wrap; gap: 2rem;
+      opacity: 0; animation: fadeUp 0.7s var(--ease) 0.6s forwards;
+      padding-top: 1.75rem;
+      border-top: 1px solid var(--border3);
+    }
+    .cs-fact { display: flex; flex-direction: column; gap: 0.25rem; }
+    .cs-fact-label { font-family: var(--f-mono); font-size: 0.52rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); }
+    .cs-fact-value { font-family: var(--f-display); font-size: 1rem; font-weight: 600; color: var(--text2); }
+
+    .cs-section { border-top: 1px solid var(--border); }
+    .cs-section-bg { background: var(--bg2); }
+
+    .cs-prose { max-width: 720px; }
+    .cs-prose p { font-size: 0.95rem; color: var(--text2); line-height: 1.85; margin-bottom: 1.15rem; }
+    .cs-prose p:last-child { margin-bottom: 0; }
+    .cs-prose strong { color: var(--text); font-weight: 500; }
+
+    .problem-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1.75rem; }
+    .problem-card { background: var(--bg3); border: 1px solid var(--border); border-left: 3px solid rgba(242,70,70,0.35); border-radius: 0 10px 10px 0; padding: 1.25rem 1.4rem; }
+    .problem-card-icon { font-size: 1.1rem; margin-bottom: 0.65rem; }
+    .problem-card h4 { font-family: var(--f-display); font-size: 0.95rem; font-weight: 600; color: var(--text); margin-bottom: 0.5rem; line-height: 1.3; }
+    .problem-card p { font-size: 0.84rem; color: var(--text2); line-height: 1.7; margin: 0; }
+
+    .contrib-list { display: flex; flex-direction: column; gap: 0; margin-top: 1.75rem; }
+    .contrib-item { display: grid; grid-template-columns: 48px 1fr; gap: 1.25rem; padding: 1.5rem 0; border-bottom: 1px solid var(--border); align-items: start; }
+    .contrib-item:last-child { border-bottom: none; }
+    .contrib-num { font-family: var(--f-display); font-size: 1.5rem; font-weight: 700; color: var(--border2); line-height: 1; padding-top: 0.2rem; }
+    .contrib-body h4 { font-family: var(--f-display); font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 0.5rem; line-height: 1.3; }
+    .contrib-body p { font-size: 0.88rem; color: var(--text2); line-height: 1.75; margin-bottom: 0.75rem; }
+    .contrib-body p:last-child { margin-bottom: 0; }
+    .contrib-body strong { color: var(--text); font-weight: 500; }
+    .contrib-highlight { display: inline-flex; align-items: center; gap: 0.4rem; font-family: var(--f-mono); font-size: 0.62rem; color: var(--blue); background: rgba(74,137,200,0.08); border: 1px solid rgba(74,137,200,0.2); padding: 0.25rem 0.6rem; border-radius: 4px; }
+
+    .callout { border-left: 2px solid var(--gold-dk); background: rgba(242,201,76,0.04); padding: 1rem 1.35rem; border-radius: 0 8px 8px 0; margin: 1.5rem 0; }
+    .callout p { font-size: 0.9rem; color: var(--text2); line-height: 1.75; margin: 0; }
+    .callout strong { color: var(--gold); font-weight: 600; }
+
+    .impact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1.75rem; }
+    .impact-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem 1rem; text-align: center; transition: border-color 0.3s; }
+    .impact-card:hover { border-color: var(--border2); }
+    .impact-card-icon { font-size: 1.5rem; margin-bottom: 0.5rem; }
+    .impact-card h4 { font-family: var(--f-display); font-size: 0.88rem; font-weight: 600; color: var(--text); margin-bottom: 0.4rem; }
+    .impact-card p { font-size: 0.78rem; color: var(--text2); line-height: 1.6; margin: 0; }
+
+    .lesson-list { display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem; }
+    .lesson-item { display: flex; gap: 1rem; align-items: flex-start; background: var(--bg3); border: 1px solid var(--border); border-radius: 10px; padding: 1.1rem 1.25rem; transition: border-color 0.25s; }
+    .lesson-item:hover { border-color: var(--border2); }
+    .lesson-icon { font-size: 1rem; flex-shrink: 0; padding-top: 0.1rem; }
+    .lesson-text { font-size: 0.88rem; color: var(--text2); line-height: 1.7; }
+    .lesson-text strong { color: var(--text); font-weight: 500; }
+
+    .cs-nav { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .cs-nav-back { display: flex; align-items: center; gap: 0.5rem; font-family: var(--f-mono); font-size: 0.7rem; letter-spacing: 0.08em; color: var(--text3); transition: color 0.2s; }
+    .cs-nav-back:hover { color: var(--gold); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 900px) {
+      .cs-hero { min-height: auto; padding-top: 6rem; }
+      .problem-grid { grid-template-columns: 1fr; }
+      .impact-grid { grid-template-columns: repeat(2, 1fr); }
+      .contrib-item { grid-template-columns: 36px 1fr; }
+    }
+    @media (max-width: 640px) {
+      .cs-hero { padding-top: 5.5rem; }
+      .cs-title { font-size: clamp(1.75rem, 9vw, 2.5rem); }
+      .cs-facts { gap: 1rem; }
+      .impact-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="readingProgress"></div>
+
+  <!-- ═══════ NAV ═══════ -->
+  <nav id="navbar">
+    <div class="nav-left">
+      <a class="nav-logo" href="index.html">MB<span class="nav-logo-dot">.</span></a>
+      <div class="nav-lang-switch">
+        <a onclick="switchLang('en')" class="lang-btn" data-lang-btn="en" style="cursor:pointer">
+          <span class="flag-mini flag-mini-en"></span><span class="lang-label">EN</span>
+        </a>
+        <span class="lang-divider">|</span>
+        <a onclick="switchLang('vi')" class="lang-btn" data-lang-btn="vi" style="cursor:pointer">
+          <span class="flag-mini flag-mini-vi"></span><span class="lang-label">VI</span>
+        </a>
+      </div>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html#about" data-i18n="nav_about">About</a></li>
+      <li><a href="index.html#projects" class="active" data-i18n="nav_projects">Projects</a></li>
+      <li><a href="index.html#journey" data-i18n="nav_journey">Journey</a></li>
+      <li><a href="index.html#skills" data-i18n="nav_skills">Skills</a></li>
+      <li><a href="index.html#contact" class="nav-cta" data-i18n="nav_cta">Let's Talk</a></li>
+    </ul>
+    <button class="nav-burger" id="burgerBtn" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+  <div class="nav-overlay" id="navOverlay"></div>
+  <nav class="nav-drawer" id="navDrawer">
+    <div class="drawer-flags">
+      <a onclick="switchLang('en')" class="nav-flag" data-lang-btn="en" style="cursor:pointer">
+        <span class="flag-mini flag-mini-en"></span> EN
+      </a>
+      <a onclick="switchLang('vi')" class="nav-flag" data-lang-btn="vi" style="cursor:pointer">
+        <span class="flag-mini flag-mini-vi"></span> VI
+      </a>
+    </div>
+    <a href="index.html#about"    onclick="closeMenu()" data-i18n="nav_about">About</a>
+    <a href="index.html#projects" onclick="closeMenu()" data-i18n="nav_projects">Projects</a>
+    <a href="index.html#journey"  onclick="closeMenu()" data-i18n="nav_journey">Journey</a>
+    <a href="index.html#skills"   onclick="closeMenu()" data-i18n="nav_skills">Skills</a>
+    <a href="index.html#contact"  onclick="closeMenu()" data-i18n="nav_cta">Let's Talk</a>
+  </nav>
+
+  <!-- ═══════ PAGE HERO ═══════ -->
+  <header class="cs-hero" id="cs-hero-top">
+    <img src="images/darksummoner.png" alt="" class="cs-hero-img" aria-hidden="true">
+    <div class="cs-hero-content">
+
+      <div class="cs-breadcrumb">
+        <div>
+          <a href="index.html">← <span data-i18n="cs_back">Back</span></a>
+          <span class="bc-sep">/</span>
+          <a href="index.html#projects" class="bc-accent" data-i18n="cs_projects">Projects</a>
+          <span class="bc-sep">/</span>
+          <span>Dark Summoner</span>
+        </div>
+        <span class="cs-reading-time">~3 min read</span>
+      </div>
+
+      <div class="cs-support-badge">◦ <span data-i18n="ds_support_badge">Supporting Case Study · Live System Optimization</span></div>
+
+      <div class="cs-eyebrow">
+        <span class="cs-eyebrow-line"></span>
+        <span data-i18n="ds_eyebrow">Mobile RPG · Live Ops Design · GihOt Studio · 2022–2023</span>
+      </div>
+
+      <h1 class="cs-title">Dark Summoner</h1>
+      <p class="cs-subtitle" data-i18n="ds_subtitle">Optimize the live system. Build the structure that was missing. Keep it stable long-term.</p>
+
+      <div class="cs-facts">
+        <div class="cs-fact">
+          <span class="cs-fact-label" data-i18n="ds_fact_role">Role</span>
+          <span class="cs-fact-value">Live Ops Designer</span>
+        </div>
+        <div class="cs-fact">
+          <span class="cs-fact-label" data-i18n="ds_fact_type">Product type</span>
+          <span class="cs-fact-value">Mobile RPG (Live)</span>
+        </div>
+        <div class="cs-fact">
+          <span class="cs-fact-label" data-i18n="ds_fact_period">Period</span>
+          <span class="cs-fact-value">2022–2023</span>
+        </div>
+        <div class="cs-fact">
+          <span class="cs-fact-label" data-i18n="ds_fact_scope">Scope</span>
+          <span class="cs-fact-value">Rework + Framework</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════ STICKY TOC BAR ═══════ -->
+  <div class="cs-toc-bar" id="csTocBar">
+    <div class="cs-toc-inner">
+      <a href="#ds-context"       class="cs-toc-link" data-section="ds-context"><span class="cs-toc-num">01</span><span data-i18n="ds_toc_context">Context</span></a>
+      <a href="#ds-problems"      class="cs-toc-link" data-section="ds-problems"><span class="cs-toc-num">02</span><span data-i18n="ds_toc_problems">Problems</span></a>
+      <a href="#ds-contributions" class="cs-toc-link" data-section="ds-contributions"><span class="cs-toc-num">03</span><span data-i18n="ds_toc_contributions">What I Did</span></a>
+      <a href="#ds-impact"        class="cs-toc-link" data-section="ds-impact"><span class="cs-toc-num">04</span><span data-i18n="ds_toc_impact">Why It Mattered</span></a>
+      <a href="#ds-lessons"       class="cs-toc-link" data-section="ds-lessons"><span class="cs-toc-num">05</span><span data-i18n="ds_toc_lessons">Lessons</span></a>
+      <div class="cs-toc-sep"></div>
+      <div class="cs-toc-lang">
+        <a onclick="switchLang('en')" class="cs-toc-lang-btn" data-lang-btn="en" style="cursor:pointer">
+          <span class="flag-mini flag-mini-en"></span>EN
+        </a>
+        <span class="cs-toc-divider">|</span>
+        <a onclick="switchLang('vi')" class="cs-toc-lang-btn" data-lang-btn="vi" style="cursor:pointer">
+          <span class="flag-mini flag-mini-vi"></span>VI
+        </a>
+      </div>
+      <a href="index.html#contact" class="cs-toc-cta" data-i18n="cs_lets_talk">Let's Talk →</a>
+    </div>
+  </div>
+
+  <!-- ═══════ 01 · CONTEXT ═══════ -->
+  <section id="ds-context" class="cs-section" style="background:var(--bg)">
+    <div class="wrap">
+      <div class="section-label"><span class="label-line"></span><span data-i18n="ds_toc_context">01 · CONTEXT</span></div>
+      <h2 class="section-title reveal">
+        I joined a game already running.<br>
+        <em>And stayed to fix it.</em>
+      </h2>
+      <div class="cs-prose reveal">
+        <p>Dark Summoner was a mobile RPG already in live operation when I joined GihOt Studio. Not a project I built from scratch — this was a running product, with real players, real content cycles, and real problems quietly building up underneath.</p>
+        <p>My role was Live Ops Designer — not to architect core systems, but to <strong>ensure what was running continued to run better</strong>. The work required reading the previous designer's decisions, identifying what needed fixing now, and laying groundwork so future updates wouldn't create new problems.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ 02 · THE PROBLEMS ═══════ -->
+  <section id="ds-problems" class="cs-section cs-section-bg">
+    <div class="wrap">
+      <div class="section-label"><span class="label-line"></span><span data-i18n="ds_toc_problems">02 · THE PROBLEMS</span></div>
+      <h2 class="section-title reveal">
+        Four problems,<br>
+        <em>all solvable.</em>
+      </h2>
+      <div class="problem-grid reveal">
+        <div class="problem-card">
+          <div class="problem-card-icon">🔁</div>
+          <h4>Stale live events</h4>
+          <p>Live events had been running long past their design lifespan without mechanical updates. Players knew the outcome before they started — zero engagement.</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-card-icon">🏆</div>
+          <h4>Broken reward structures</h4>
+          <p>Reward ladders no longer reflected player time-effort investment. Some modes over-rewarded, others under-rewarded — no internal system maintained the balance.</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-card-icon">📊</div>
+          <h4>No design metrics framework</h4>
+          <p>The Game Design team had no shared metric set to evaluate designs against. Every decision was gut-feel — no objective reference point existed.</p>
+        </div>
+        <div class="problem-card">
+          <div class="problem-card-icon">⚖️</div>
+          <h4>Undocumented balance logic</h4>
+          <p>New heroes and content were added by estimation, with no clear formula from the previous designer. Each new update introduced unpredictable balance risk.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ 03 · WHAT I DID ═══════ -->
+  <section id="ds-contributions" class="cs-section" style="background:var(--bg)">
+    <div class="wrap">
+      <div class="section-label"><span class="label-line"></span><span data-i18n="ds_toc_contributions">03 · WHAT I DID</span></div>
+      <h2 class="section-title reveal">
+        Not building from scratch.<br>
+        <em>Building what was actually missing.</em>
+      </h2>
+
+      <div class="contrib-list reveal">
+
+        <div class="contrib-item">
+          <div class="contrib-num">01</div>
+          <div class="contrib-body">
+            <h4>Live Event Mechanics Rework</h4>
+            <p>Analyzed each live event along two axes: engagement mechanics and reward structure. For events that had lost engagement, I redesigned trigger conditions, added secondary loops with real value, and readjusted reward flow to match the current game phase.</p>
+            <div class="callout">
+              <p>💡 <strong>Principle:</strong> Events lose engagement not because rewards are too low — but because the mechanics have become too familiar. Change the loop, not just the number.</p>
+            </div>
+            <span class="contrib-highlight">🔄 Applied across 6+ active events</span>
+          </div>
+        </div>
+
+        <div class="contrib-item">
+          <div class="contrib-num">02</div>
+          <div class="contrib-body">
+            <h4>UI/UX &amp; Reward Structure Improvements</h4>
+            <p>Audited the interface of key systems to identify friction points: hidden reward information, unclear tier thresholds, inconsistent feedback. Restructured reward ladders in select systems to create cleaner progression perception — so players knew exactly what they were earning and what came next.</p>
+            <span class="contrib-highlight">🎯 Clarity before complexity</span>
+          </div>
+        </div>
+
+        <div class="contrib-item">
+          <div class="contrib-num">03</div>
+          <div class="contrib-body">
+            <h4>Design Metrics Framework</h4>
+            <p>Created an internal metric set so the Game Design team had a shared foundation when evaluating new designs. The framework covered: engagement benchmarks by system type, reward density standards by game phase, and a pre-launch event review checklist.</p>
+            <div class="callout">
+              <p>📊 <strong>Why this mattered:</strong> Without a framework, each designer held a different standard. The result was inconsistent designs and prolonged reviews. A framework creates a shared language.</p>
+            </div>
+            <span class="contrib-highlight">📋 Framework became onboarding material for new designers</span>
+          </div>
+        </div>
+
+        <div class="contrib-item">
+          <div class="contrib-num">04</div>
+          <div class="contrib-body">
+            <h4>Reverse-Engineering the Legacy Balance Logic</h4>
+            <p>This was the hardest part. The previous designer left no documentation on how they calculated hero stats and power scaling. I analyzed each existing hero — stats, skills, cost — and gradually reconstructed the original formula from patterns in the data.</p>
+            <p>The output was a reusable spreadsheet for designing new heroes within relative power budget — maintaining consistency even though I hadn't created the original system.</p>
+            <span class="contrib-highlight">⚖️ Reconstructed from patterns, not documentation</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ 04 · WHY IT MATTERED ═══════ -->
+  <section id="ds-impact" class="cs-section cs-section-bg">
+    <div class="wrap">
+      <div class="section-label"><span class="label-line"></span><span data-i18n="ds_toc_impact">04 · WHY IT MATTERED</span></div>
+      <h2 class="section-title reveal">
+        Optimization gets less attention.<br>
+        <em>But it's what keeps a game alive.</em>
+      </h2>
+      <div class="impact-grid reveal">
+        <div class="impact-card">
+          <div class="impact-card-icon">🔄</div>
+          <h4>Smoother operations</h4>
+          <p>Live events could be updated and deployed faster once the team had clear structure to work from.</p>
+        </div>
+        <div class="impact-card">
+          <div class="impact-card-icon">📋</div>
+          <h4>Design consistency</h4>
+          <p>The metrics framework created shared standards — faster reviews, fewer gut-feel debates.</p>
+        </div>
+        <div class="impact-card">
+          <div class="impact-card-icon">🛡️</div>
+          <h4>Future-proofing</h4>
+          <p>The balance formula meant future heroes could be designed correctly from day one, not patched post-launch.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ 05 · LESSONS ═══════ -->
+  <section id="ds-lessons" class="cs-section" style="background:var(--bg)">
+    <div class="wrap">
+      <div class="section-label"><span class="label-line"></span><span data-i18n="ds_toc_lessons">05 · KEY LESSONS</span></div>
+      <h2 class="section-title reveal">
+        What I carried forward.<br>
+        <em>From a game I did not create.</em>
+      </h2>
+      <div class="lesson-list reveal">
+        <div class="lesson-item">
+          <span class="lesson-icon">🔍</span>
+          <p class="lesson-text">
+            <strong>Read before writing.</strong>
+            When inheriting a live product, the first task is understanding the previous designer's intent — even without explanation. Every system has logic, even when undocumented.
+          </p>
+        </div>
+        <div class="lesson-item">
+          <span class="lesson-icon">🧱</span>
+          <p class="lesson-text">
+            <strong>Structure is a feature.</strong>
+            The metrics framework is invisible to players. But it affects every design decision that follows. Sometimes the most important work is the work that can't be seen.
+          </p>
+        </div>
+        <div class="lesson-item">
+          <span class="lesson-icon">⚡</span>
+          <p class="lesson-text">
+            <strong>Constraints clarify priorities.</strong>
+            Not being able to redesign the whole game was a constraint. But it forced clarity: what needs fixing now, what can wait. This is a necessary skill for any live product.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ BACK / NEXT NAV ═══════ -->
+  <section style="border-top:1px solid var(--border); background:var(--bg2)">
+    <div class="wrap" style="padding-top:3rem; padding-bottom:3rem;">
+      <div class="cs-nav">
+        <a href="index.html#projects" class="cs-nav-back">
+          ← <span data-i18n="cs_all_projects">All Projects</span>
+        </a>
+        <div class="cs-nav-projects">
+          <a href="silkroad.html" class="btn btn-ghost" style="font-size:0.78rem">← Silkroad Online Mobile</a>
+          <a href="yulgang.html" class="btn btn-ghost" style="font-size:0.78rem">← Yulgang</a>
+          <a href="index.html#contact" class="btn btn-primary" style="font-size:0.78rem" data-i18n="cs_lets_talk">Let's Talk →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ FOOTER ═══════ -->
+  <footer>
+    <span data-i18n="footer_copy">© 2025 Minh Bach</span>
+    <span data-i18n="footer_tagline">Game Designer · Product Owner · Ho Chi Minh City, Vietnam</span>
+  </footer>
+  <!-- ═══════ FLOATING DESKTOP PANEL ═══════ -->
+  <div class="float-panel" id="floatPanel">
+    <div class="fp-section fp-lang">
+      <a onclick="switchLang('vi')" class="fp-lang-toggle" data-show-when="en" style="cursor:pointer">
+        <span class="flag-mini flag-mini-vi"></span> Tiếng Việt
+      </a>
+      <a onclick="switchLang('en')" class="fp-lang-toggle" data-show-when="vi" style="cursor:pointer">
+        <span class="flag-mini flag-mini-en"></span> English
+      </a>
+    </div>
+    <div class="fp-divider"></div>
+    <a href="https://zalo.me/0908992408" target="_blank" class="fp-action fp-action--zalo" title="Chat on Zalo">
+      <span class="fp-action-icon"><svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="8" fill="#0068FF"/><path d="M7 21.5c0 .8.7 1.5 1.5 1.5H10l-.5 2.5 3-2.5h8c.8 0 1.5-.7 1.5-1.5v-9C22.5 11.7 21.8 11 21 11H8.5C7.7 11 7 11.7 7 12.5v9z" fill="white"/><path d="M10 16h12M10 19h8" stroke="#0068FF" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+      <span class="fp-action-text"><span class="fp-action-name">Zalo</span><span class="fp-action-sub">0908 992 408</span></span>
+    </a>
+    <div class="fp-divider"></div>
+    <a href="https://www.linkedin.com/in/minhbachlap" target="_blank" class="fp-action fp-action--linkedin" title="Message on LinkedIn">
+      <span class="fp-action-icon"><svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="8" fill="#0A66C2"/><path d="M8 12h4v12H8zM10 10.5a2 2 0 110-4 2 2 0 010 4zM14 12h3.8v1.7h.05C18.4 12.6 19.8 12 21.4 12c3.5 0 4.1 2.3 4.1 5.3V24h-4v-5.9c0-1.4 0-3.2-2-3.2s-2.3 1.6-2.3 3.1V24H14V12z" fill="white"/></svg></span>
+      <span class="fp-action-text"><span class="fp-action-name">LinkedIn</span><span class="fp-action-sub" data-i18n="fp_linkedin_dm">Send a Message</span></span>
+    </a>
+  </div>
+
+  <script src="js/common.js"></script>
+</body>
+</html>

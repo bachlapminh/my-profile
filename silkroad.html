@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Silkroad Online Mobile — Designing Without a Blueprint · Minh Bach</title>
+  <meta name="description" content="How I rebuilt a 20-year-old MMORPG for mobile — reverse-engineering an undocumented combat formula, designing a retention-driven economy, and navigating failures on a live product.">
+  <meta property="og:title" content="Silkroad Online Mobile — Case Study by Minh Bach">
+  <meta property="og:description" content="Core Game Designer, Product Owner, and Game Design Leader on a flagship mobile MMORPG rebuild: 21 months, ≤3 person GD team, $1M+ revenue in Month 1.">
+  <meta property="og:type" content="article">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=3">
+  <script src="js/i18n.js"></script>
+  <style>
+    /* ════════ READING PROGRESS ════════ */
+    #readingProgress {
+      position: fixed; top: 0; left: 0;
+      height: 2px; width: 0%;
+      background: linear-gradient(90deg, var(--gold-dk), var(--gold), var(--gold-lt));
+      z-index: 9999;
+      transition: width 0.1s linear;
+    }
+
+    /* ════════ HERO ════════ */
+    .cs-hero {
+      min-height: 60vh;
+      display: flex;
+      align-items: flex-end;
+      padding: 7rem var(--px) 4rem;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(165deg, #0B1218 0%, #111820 50%, #0d1019 100%);
+    }
+    .cs-hero-bg {
+      position: absolute; inset: 0;
+      pointer-events: none;
+    }
+    .cs-hero-bg::before {
+      content: '';
+      position: absolute;
+      top: -15%; right: -10%;
+      width: 70vw; height: 70vw;
+      max-width: 800px; max-height: 800px;
+      border-radius: 50%;
+      background: radial-gradient(circle,
+        rgba(242,201,76,0.09) 0%,
+        rgba(180,140,30,0.04) 40%,
+        transparent 70%
+      );
+    }
+    .cs-hero-bg::after {
+      content: '';
+      position: absolute;
+      bottom: -20%; left: -5%;
+      width: 50vw; height: 50vw;
+      max-width: 500px; max-height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle,
+        rgba(74,137,200,0.05) 0%,
+        transparent 60%
+      );
+    }
+    .cs-hero-scanline {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(242,201,76,0.3), transparent);
+    }
+
+    .cs-hero-content {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 2;
+    }
+
+    .cs-breadcrumb {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 0.75rem;
+      font-family: var(--f-mono); font-size: 0.65rem;
+      letter-spacing: 0.08em; color: var(--text3);
+      margin-bottom: 2.5rem;
+      opacity: 0; animation: fadeUp 0.7s var(--ease) 0.1s forwards;
+    }
+    .cs-breadcrumb a { color: var(--text3); transition: color 0.2s; }
+    .cs-breadcrumb a:hover { color: var(--gold); }
+    .cs-breadcrumb .bc-accent { color: var(--gold); }
+    .bc-sep { margin: 0 0.5rem; opacity: 0.4; }
+    .cs-reading-time { font-family: var(--f-mono); font-size: 0.6rem; color: var(--text3); letter-spacing: 0.08em; }
+
+    .cs-timeline-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-family: var(--f-mono); font-size: 0.6rem; letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold); background: rgba(242,201,76,0.08);
+      border: 1px solid rgba(242,201,76,0.25);
+      padding: 0.35rem 0.8rem; border-radius: 4px;
+      margin-bottom: 1.25rem;
+      opacity: 0; animation: fadeUp 0.7s var(--ease) 0.15s forwards;
+    }
+    .cs-timeline-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 6px rgba(242,201,76,0.7);
+      animation: goldPulse 2s ease-in-out infinite;
+    }
+    @keyframes goldPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.7); }
+    }
+
+    .cs-eyebrow {
+      display: flex; align-items: center; gap: 0.75rem;
+      font-family: var(--f-mono); font-size: 0.65rem;
+      letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold);
+      margin-bottom: 1rem;
+      opacity: 0; animation: fadeUp 0.7s var(--ease) 0.2s forwards;
+    }
+    .cs-eyebrow-line { display: block; width: 2.5rem; height: 1px; background: var(--gold); }
+
+    .cs-title {
+      font-family: var(--f-display);
+      font-size: clamp(2.5rem, 6.5vw, 5rem);
+      font-weight: 700; line-height: 0.95;
+      letter-spacing: -0.025em; color: var(--text);
+      margin-bottom: 0.75rem;
+      opacity: 0; animation: fadeUp 0.7s var(--ease) 0.32s forwards;
+    }
+    .cs-subtitle {
+      font-family: var(--f-display);
+      font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+      font-weight: 500; font-style: italic; color: var(--gold);
+      margin-bottom: 2rem;
+      opacity: 0; animation: fadeUp 0.7s var(--ease) 0.46s forwards;
+      letter-spacing: -0.01em;
+    }
+    .cs-meta-roles {
+      display: flex; flex-wrap: wrap; gap: 0.5rem;
+      margin-bottom: 2.5rem;
+      opacity: 0; animation: fadeUp 0.7s var(--ease) 0.56s forwards;
+    }
+    .cs-role-pill {
+      font-family: var(--f-mono); font-size: 0.6rem; letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text2); background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      padding: 0.3rem 0.75rem; border-radius: 3px;
+    }
+
+    .cs-facts {
+      display: flex; flex-wrap: wrap; gap: 2.5rem;
+      opacity: 0; animation: fadeUp 0.7s var(--ease) 0.68s forwards;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border3);
+    }
+    .cs-fact { display: flex; flex-direction: column; gap: 0.25rem; }
+    .cs-fact-label {
+      font-family: var(--f-mono); font-size: 0.52rem;
+      letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3);
+    }
+    .cs-fact-value {
+      font-family: var(--f-display); font-size: 1rem;
+      font-weight: 600; color: var(--text2);
+    }
+    .cs-fact-value.gold { color: var(--gold); }
+
+    .cs-section { border-top: 1px solid var(--border); position: relative; }
+    .cs-section-alt { background: var(--bg2); }
+
+    .sec-number {
+      position: absolute;
+      top: 1.5rem; right: var(--px);
+      font-family: var(--f-display);
+      font-size: clamp(6rem, 14vw, 11rem);
+      font-weight: 700;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(242,201,76,0.06);
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+      letter-spacing: -0.04em;
+    }
+
+    .cs-prose { max-width: 740px; }
+    .cs-prose p { font-size: 1rem; color: var(--text2); line-height: 1.9; margin-bottom: 1.25rem; }
+    .cs-prose p:last-child { margin-bottom: 0; }
+    .cs-prose strong { color: var(--text); font-weight: 600; }
+    .cs-prose em { color: var(--gold); font-style: italic; }
+
+    .context-lines { display: flex; flex-direction: column; gap: 0; margin: 2rem 0; }
+    .context-line {
+      display: flex; align-items: baseline; gap: 0.85rem;
+      padding: 0.85rem 0;
+      border-bottom: 1px solid var(--border3);
+      font-size: 1rem; color: var(--text2); line-height: 1.6;
+    }
+    .context-line:last-child { border-bottom: none; }
+    .context-line-dot {
+      width: 4px; height: 4px; border-radius: 50%;
+      background: var(--gold); flex-shrink: 0;
+      position: relative; top: -2px;
+    }
+
+    .challenge-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      margin-top: 2.5rem;
+      align-items: start;
+    }
+    .challenge-col-label {
+      font-family: var(--f-mono); font-size: 0.58rem;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--text3); margin-bottom: 1rem;
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .challenge-col-label::before {
+      content: '';
+      display: block; width: 1.5rem; height: 1px;
+      background: var(--text3);
+    }
+    .challenge-col h3 { font-family: var(--f-display); font-size: 1.1rem; font-weight: 600; color: var(--text); margin-bottom: 0.75rem; line-height: 1.3; }
+    .challenge-col p { font-size: 0.95rem; color: var(--text2); line-height: 1.85; }
+
+    .tension-block {
+      margin-top: 2.5rem;
+      padding: 2rem 2.25rem;
+      background: rgba(242,201,76,0.03);
+      border: 1px solid rgba(242,201,76,0.14);
+      border-left: 3px solid var(--gold-dk);
+      border-radius: 0 12px 12px 0;
+    }
+    .tension-block-label { font-family: var(--f-mono); font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.25rem; }
+    .tension-items { display: flex; flex-direction: column; gap: 1rem; }
+    .tension-item { display: grid; grid-template-columns: 1.5rem 1fr; gap: 0.85rem; align-items: start; }
+    .tension-arrow { font-size: 0.75rem; color: var(--gold); padding-top: 0.2rem; font-weight: 700; }
+    .tension-item p { font-size: 0.93rem; color: var(--text2); line-height: 1.75; }
+    .tension-item p strong { color: var(--text); font-weight: 600; }
+
+    .meta-skill {
+      margin-top: 2.5rem;
+      padding: 1.75rem 2rem;
+      background: rgba(74,137,200,0.04);
+      border: 1px solid rgba(74,137,200,0.15);
+      border-radius: 10px;
+      display: flex; gap: 1.25rem; align-items: flex-start;
+    }
+    .meta-skill-icon { font-size: 1.35rem; flex-shrink: 0; }
+    .meta-skill-body strong { display: block; font-family: var(--f-display); font-size: 0.95rem; font-weight: 600; color: var(--blue); margin-bottom: 0.5rem; }
+    .meta-skill-body p { font-size: 0.9rem; color: var(--text2); line-height: 1.8; }
+
+    .process-steps { display: flex; flex-direction: column; gap: 0; margin-top: 2rem; }
+    .process-step { display: grid; grid-template-columns: 56px 1fr; gap: 1.5rem; padding: 1.75rem 0; border-bottom: 1px solid var(--border3); align-items: start; }
+    .process-step:last-child { border-bottom: none; }
+    .process-step-num { font-family: var(--f-display); font-size: 2rem; font-weight: 700; color: var(--border2); line-height: 1; }
+    .process-step-body h4 { font-family: var(--f-display); font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 0.5rem; line-height: 1.3; }
+    .process-step-body p { font-size: 0.9rem; color: var(--text2); line-height: 1.8; }
+    .process-step-body strong { color: var(--text); font-weight: 500; }
+
+    .accuracy-card { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-top: 2rem; }
+    .accuracy-half { background: var(--bg3); padding: 1.75rem; text-align: center; }
+    .accuracy-big { font-family: var(--f-display); font-size: 3.5rem; font-weight: 700; line-height: 1; margin-bottom: 0.5rem; }
+    .accuracy-big.gold { color: var(--gold); }
+    .accuracy-big.green { color: var(--green); }
+    .accuracy-label { font-family: var(--f-mono); font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text3); }
+    .accuracy-sub { font-size: 0.8rem; color: var(--text3); line-height: 1.5; margin-top: 0.5rem; }
+
+    .economy-phases { display: flex; flex-direction: column; gap: 0; margin-top: 2rem; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    .economy-phase { display: grid; grid-template-columns: 120px 1fr; gap: 0; border-bottom: 1px solid var(--border); }
+    .economy-phase:last-child { border-bottom: none; }
+    .economy-phase-tag { padding: 1.5rem; display: flex; flex-direction: column; justify-content: center; background: var(--bg3); border-right: 1px solid var(--border); }
+    .economy-phase-name { font-family: var(--f-display); font-size: 0.85rem; font-weight: 700; color: var(--text); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.2rem; }
+    .economy-phase-tag-pill { font-family: var(--f-mono); font-size: 0.5rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-dk); }
+    .economy-phase-content { padding: 1.5rem; background: var(--bg2); }
+    .economy-phase-content p { font-size: 0.9rem; color: var(--text2); line-height: 1.75; margin-bottom: 0.5rem; }
+    .economy-phase-content p:last-child { margin: 0; }
+    .economy-phase-content strong { color: var(--text); font-weight: 500; }
+
+    .retention-grid { display: flex; flex-wrap: wrap; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-top: 2rem; }
+    .retention-stat { background: var(--bg3); padding: 1.5rem 1rem; text-align: center; flex: 1 0 80px; }
+    .retention-day { font-family: var(--f-mono); font-size: 0.6rem; letter-spacing: 0.12em; color: var(--text3); text-transform: uppercase; margin-bottom: 0.5rem; }
+    .retention-pct { font-family: var(--f-display); font-size: 1.85rem; font-weight: 700; line-height: 1; }
+    .retention-pct.d1 { color: var(--gold); }
+    .retention-pct.d2 { color: #e8b84b; }
+    .retention-pct.d7 { color: #c99d3f; }
+    .retention-pct.d14 { color: #a87e2e; }
+    .retention-pct.d30 { color: #8a6522; }
+    .retention-type { font-size: 0.72rem; color: var(--text3); margin-top: 0.3rem; }
+
+    .failure-list { display: flex; flex-direction: column; gap: 1.25rem; margin-top: 2rem; }
+    .failure-card { background: var(--bg3); border: 1px solid var(--border); border-left: 3px solid rgba(220,80,80,0.4); border-radius: 0 10px 10px 0; padding: 1.5rem 1.75rem; transition: border-color 0.25s; }
+    .failure-card:hover { border-color: rgba(220,80,80,0.6); }
+    .failure-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.85rem; }
+    .failure-icon { font-size: 1.1rem; }
+    .failure-title { font-family: var(--f-display); font-size: 1rem; font-weight: 600; color: var(--text); }
+    .failure-body p { font-size: 0.9rem; color: var(--text2); line-height: 1.8; margin-bottom: 0.75rem; }
+    .failure-body p:last-child { margin: 0; }
+    .failure-body strong { color: var(--text); font-weight: 500; }
+    .failure-fix { display: flex; align-items: flex-start; gap: 0.6rem; margin-top: 0.85rem; padding: 0.75rem 1rem; background: rgba(86,211,100,0.04); border: 1px solid rgba(86,211,100,0.12); border-radius: 6px; }
+    .failure-fix-label { font-family: var(--f-mono); font-size: 0.58rem; letter-spacing: 0.1em; color: var(--green); white-space: nowrap; padding-top: 0.1rem; font-weight: 600; }
+    .failure-fix p { font-size: 0.85rem; color: var(--text2); line-height: 1.7; margin: 0 !important; }
+
+    .results-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-top: 2rem; }
+    .result-card { background: var(--bg3); padding: 2.5rem 2rem; text-align: center; transition: background 0.3s; }
+    .result-card:hover { background: var(--bg4); }
+    .result-big { font-family: var(--f-display); font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 700; line-height: 1; color: var(--gold); margin-bottom: 0.6rem; }
+    .result-label { font-family: var(--f-mono); font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text3); }
+    .result-sub { font-size: 0.82rem; color: var(--text3); margin-top: 0.35rem; line-height: 1.5; }
+
+    .lesson-quote { max-width: 760px; margin-top: 2rem; padding: 2.5rem 2.75rem; background: rgba(242,201,76,0.03); border-left: 3px solid var(--gold-dk); border-radius: 0 14px 14px 0; }
+    .lesson-quote p { font-family: var(--f-display); font-size: clamp(1.1rem, 2vw, 1.35rem); font-weight: 500; font-style: italic; color: var(--text); line-height: 1.65; margin-bottom: 1.25rem; }
+    .lesson-quote p:last-child { margin: 0; color: var(--text2); font-size: 1.05rem; }
+    .lesson-quote em { color: var(--gold); font-style: italic; }
+
+    .cs-nav { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .cs-nav-back { display: flex; align-items: center; gap: 0.5rem; font-family: var(--f-mono); font-size: 0.7rem; letter-spacing: 0.08em; color: var(--text3); transition: color 0.2s; }
+    .cs-nav-back:hover { color: var(--gold); }
+
+    .callout { border-left: 2px solid var(--gold-dk); background: rgba(242,201,76,0.04); padding: 1rem 1.35rem; border-radius: 0 8px 8px 0; margin: 1.5rem 0; }
+    .callout p { font-size: 0.9rem; color: var(--text2); line-height: 1.8; margin: 0; }
+    .callout strong { color: var(--gold); font-weight: 600; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 900px) {
+      .challenge-split { grid-template-columns: 1fr; gap: 2rem; }
+      .results-grid { grid-template-columns: 1fr 1fr; }
+      .accuracy-card { grid-template-columns: 1fr; }
+      .economy-phase { grid-template-columns: 80px 1fr; }
+    }
+    @media (max-width: 640px) {
+      .cs-title { font-size: clamp(2rem, 10vw, 3rem); }
+      .cs-facts { gap: 1.25rem; }
+      .results-grid { grid-template-columns: 1fr; }
+      .retention-grid { flex-wrap: nowrap; overflow-x: auto; }
+      .lesson-quote { padding: 1.5rem 1.75rem; }
+      .tension-block { padding: 1.5rem 1.5rem; }
+      .process-step { grid-template-columns: 40px 1fr; gap: 1rem; }
+      .economy-phase { grid-template-columns: 1fr; }
+      .economy-phase-tag { border-right: none; border-bottom: 1px solid var(--border); }
+      .meta-skill { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══════ READING PROGRESS ═══════ -->
+  <div id="readingProgress"></div>
+
+  <!-- ═══════ NAV ═══════ -->
+  <nav id="navbar">
+    <div class="nav-left">
+      <a class="nav-logo" href="index.html">MB<span class="nav-logo-dot">.</span></a>
+      <div class="nav-lang-switch">
+        <a onclick="switchLang('en')" class="lang-btn" data-lang-btn="en" style="cursor:pointer">
+          <span class="flag-mini flag-mini-en"></span><span class="lang-label">EN</span>
+        </a>
+        <span class="lang-divider">|</span>
+        <a onclick="switchLang('vi')" class="lang-btn" data-lang-btn="vi" style="cursor:pointer">
+          <span class="flag-mini flag-mini-vi"></span><span class="lang-label">VI</span>
+        </a>
+      </div>
+    </div>
+    <ul class="nav-links">
+      <li><a href="index.html#about" data-i18n="nav_about">About</a></li>
+      <li><a href="index.html#projects" class="active" data-i18n="nav_projects">Projects</a></li>
+      <li><a href="index.html#journey" data-i18n="nav_journey">Journey</a></li>
+      <li><a href="index.html#skills" data-i18n="nav_skills">Skills</a></li>
+      <li><a href="index.html#contact" class="nav-cta" data-i18n="nav_cta">Let's Talk</a></li>
+    </ul>
+    <button class="nav-burger" id="burgerBtn" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+  <div class="nav-overlay" id="navOverlay"></div>
+  <nav class="nav-drawer" id="navDrawer">
+    <div class="drawer-flags">
+      <a onclick="switchLang('en')" class="nav-flag" data-lang-btn="en" style="cursor:pointer">
+        <span class="flag-mini flag-mini-en"></span> EN
+      </a>
+      <a onclick="switchLang('vi')" class="nav-flag" data-lang-btn="vi" style="cursor:pointer">
+        <span class="flag-mini flag-mini-vi"></span> VI
+      </a>
+    </div>
+    <a href="index.html#about"    onclick="closeMenu()" data-i18n="nav_about">About</a>
+    <a href="index.html#projects" onclick="closeMenu()" data-i18n="nav_projects">Projects</a>
+    <a href="index.html#journey"  onclick="closeMenu()" data-i18n="nav_journey">Journey</a>
+    <a href="index.html#skills"   onclick="closeMenu()" data-i18n="nav_skills">Skills</a>
+    <a href="index.html#contact"  onclick="closeMenu()" data-i18n="nav_cta">Let's Talk</a>
+  </nav>
+
+  <!-- ═══════ HERO ═══════ -->
+  <header class="cs-hero" id="cs-hero-top">
+    <img src="images/silkroadonline.png" alt="" class="cs-hero-img" aria-hidden="true">
+    <div class="cs-hero-bg"></div>
+    <div class="cs-hero-scanline"></div>
+    <div class="cs-hero-content">
+
+      <!-- Breadcrumb -->
+      <div class="cs-breadcrumb">
+        <div>
+          <a href="index.html">← <span data-i18n="cs_back">Back</span></a>
+          <span class="bc-sep">/</span>
+          <a href="index.html#projects" class="bc-accent" data-i18n="cs_projects">Projects</a>
+          <span class="bc-sep">/</span>
+          <span>Silkroad Online Mobile</span>
+        </div>
+        <span class="cs-reading-time">~6 min read</span>
+      </div>
+
+      <!-- Timeline badge -->
+      <div class="cs-timeline-badge">
+        <span class="cs-timeline-dot"></span>
+        Oct 2022 → Jul 2024 &nbsp;·&nbsp; 21 Months
+      </div>
+
+      <!-- Eyebrow -->
+      <div class="cs-eyebrow">
+        <span class="cs-eyebrow-line"></span>
+        Mobile MMORPG · Flagship Case Study · GihOt Studio
+      </div>
+
+      <h1 class="cs-title">Silkroad Online<br>Mobile</h1>
+      <p class="cs-subtitle">Designing Without a Blueprint.</p>
+
+      <div class="cs-meta-roles">
+        <span class="cs-role-pill">Core Game Designer</span>
+        <span class="cs-role-pill">Product Owner</span>
+        <span class="cs-role-pill">Game Design Leader</span>
+      </div>
+
+      <!-- Quick-facts -->
+      <div class="cs-facts">
+        <div class="cs-fact">
+          <span class="cs-fact-label">Genre</span>
+          <span class="cs-fact-value">Mobile MMORPG</span>
+        </div>
+        <div class="cs-fact">
+          <span class="cs-fact-label">Original IP</span>
+          <span class="cs-fact-value">2004 PC Classic (Joymax)</span>
+        </div>
+        <div class="cs-fact">
+          <span class="cs-fact-label">GD Team Size</span>
+          <span class="cs-fact-value gold">≤ 3 people</span>
+        </div>
+        <div class="cs-fact">
+          <span class="cs-fact-label">Revenue — Month 1</span>
+          <span class="cs-fact-value gold">$1.5M+</span>
+        </div>
+        <div class="cs-fact">
+          <span class="cs-fact-label">Engine</span>
+          <span class="cs-fact-value">Internal Proprietary</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════ STICKY TOC BAR ═══════ -->
+  <div class="cs-toc-bar" id="csTocBar">
+    <div class="cs-toc-inner">
+      <a href="#sr-context"  class="cs-toc-link" data-section="sr-context"><span class="cs-toc-num">01</span><span data-i18n="sr_toc_context">Context</span></a>
+      <a href="#sr-challenge" class="cs-toc-link" data-section="sr-challenge"><span class="cs-toc-num">02</span><span data-i18n="sr_toc_challenge">Challenge</span></a>
+      <a href="#sr-formula"  class="cs-toc-link" data-section="sr-formula"><span class="cs-toc-num">03</span><span data-i18n="sr_toc_formula">Formula</span></a>
+      <a href="#sr-economy"  class="cs-toc-link" data-section="sr-economy"><span class="cs-toc-num">04</span><span data-i18n="sr_toc_economy">Economy</span></a>
+      <a href="#sr-failures" class="cs-toc-link" data-section="sr-failures"><span class="cs-toc-num">05</span><span data-i18n="sr_toc_failures">Failures</span></a>
+      <a href="#sr-results"  class="cs-toc-link" data-section="sr-results"><span class="cs-toc-num">06</span><span data-i18n="sr_toc_results">Results</span></a>
+      <a href="#sr-lesson"   class="cs-toc-link" data-section="sr-lesson"><span class="cs-toc-num">07</span><span data-i18n="sr_toc_lesson">Lesson</span></a>
+      <div class="cs-toc-sep"></div>
+      <div class="cs-toc-lang">
+        <a onclick="switchLang('en')" class="cs-toc-lang-btn" data-lang-btn="en" style="cursor:pointer">
+          <span class="flag-mini flag-mini-en"></span>EN
+        </a>
+        <span class="cs-toc-divider">|</span>
+        <a onclick="switchLang('vi')" class="cs-toc-lang-btn" data-lang-btn="vi" style="cursor:pointer">
+          <span class="flag-mini flag-mini-vi"></span>VI
+        </a>
+      </div>
+      <a href="index.html#contact" class="cs-toc-cta" data-i18n="cs_lets_talk">Let's Talk →</a>
+    </div>
+  </div>
+
+  <!-- ═══════ 01 · CONTEXT ═══════ -->
+  <section id="sr-context" class="cs-section" style="background:var(--bg)">
+    <div class="wrap" style="position:relative">
+      <div class="sec-number">01</div>
+      <div class="section-label"><span class="label-line"></span>01 · Context</div>
+      <h2 class="section-title reveal">
+        A 2004 PC MMORPG<br>
+        <em>that defined a generation.</em>
+      </h2>
+      <div class="cs-prose reveal">
+        <p>Silkroad Online was released in 2004. It didn't just capture a playerbase — it became a cultural reference point for an entire generation of Southeast Asian gamers who grew up grinding its routes and trading its economy. It is still remembered 20 years later.</p>
+        <p>The task was to rebuild it for mobile. But the conditions made it far from a standard port.</p>
+      </div>
+      <div class="context-lines reveal">
+        <div class="context-line"><span class="context-line-dot"></span>No design document. No formula. No blueprint left behind by the original creator.</div>
+        <div class="context-line"><span class="context-line-dot"></span>Built on an internal proprietary engine — no off-the-shelf tooling or precedent to reference.</div>
+        <div class="context-line"><span class="context-line-dot"></span>Game Design team: never more than 3 people at any point across 21 months.</div>
+        <div class="context-line"><span class="context-line-dot"></span>20 years of private server communities — thousands of hours of collective reverse-engineering — and still, no one had cracked the original combat formula completely.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ 02 · THE REAL CHALLENGE ═══════ -->
+  <section id="sr-challenge" class="cs-section cs-section-alt">
+    <div class="wrap" style="position:relative">
+      <div class="sec-number">02</div>
+      <div class="section-label"><span class="label-line"></span>02 · The Real Challenge</div>
+      <h2 class="section-title reveal">
+        Not "what did they build?"<br>
+        <em>But "why did they build it that way?"</em>
+      </h2>
+
+      <div class="challenge-split reveal">
+        <div class="challenge-col">
+          <div class="challenge-col-label">Surface Problem</div>
+          <h3>Rebuild a beloved game for mobile.</h3>
+          <p>This is the version everyone sees on the brief. Port the systems, adapt the UX for touch, preserve what made the original work. Straightforward enough — if you have the original designer's reasoning.</p>
+        </div>
+        <div class="challenge-col">
+          <div class="challenge-col-label">Actual Problem</div>
+          <h3>Decode intent from 20-year-old decisions, with no author to ask.</h3>
+          <p>The original creator left no explanation. Only the result. Understanding why those systems were built the way they were — and whether that reasoning still held after two decades — was the real design challenge.</p>
+        </div>
+      </div>
+
+      <div class="tension-block reveal">
+        <div class="tension-block-label">The Core Tensions</div>
+        <div class="tension-items">
+          <div class="tension-item">
+            <span class="tension-arrow">→</span>
+            <p>20 years of private server communities collectively tried to reverse-engineer the original combat formula. <strong>None succeeded completely.</strong> The gaps were always there. This was the baseline I inherited.</p>
+          </div>
+          <div class="tension-item">
+            <span class="tension-arrow">→</span>
+            <p>After 20 years, <strong>was the original design still correct?</strong> Context changes. Player expectations change. What made sense for a 2004 PC playerbase may not apply to a 2022 mobile market in Southeast Asia.</p>
+          </div>
+          <div class="tension-item">
+            <span class="tension-arrow">→</span>
+            <p>The hardest judgment call: <strong>where to follow the original creator's logic faithfully, and where to apply independent judgment</strong> where the original may have been wrong — or where time had made it wrong.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="meta-skill reveal">
+        <div class="meta-skill-icon">🧭</div>
+        <div class="meta-skill-body">
+          <strong>The Transferable Skill This Demonstrates</strong>
+          <p>Working with ambiguous direction and finding the real objective underneath the surface ask. When a boss gives vague instruction, when a document is missing, when the original decision-maker is unavailable — the ability to reconstruct intent from outcomes is the skill. This is what I was practicing for 21 months.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ 03 · REVERSE ENGINEERING ═══════ -->
+  <section id="sr-formula" class="cs-section" style="background:var(--bg)">
+    <div class="wrap" style="position:relative">
+      <div class="sec-number">03</div>
+      <div class="section-label"><span class="label-line"></span>03 · Reverse Engineering the Formula</div>
+      <h2 class="section-title reveal">
+        20 days of induction.<br>
+        <em>Converging on what no one had solved.</em>
+      </h2>
+      <div class="cs-prose reveal">
+        <p>Community formulas existed. Players had spent years trying to crack the combat math. All of them were partially correct — accurate within certain stat ranges, wrong beyond them. No single formula held across the full progression curve.</p>
+      </div>
+
+      <div class="process-steps reveal">
+        <div class="process-step">
+          <div class="process-step-num">01</div>
+          <div class="process-step-body">
+            <h4>Collect all community attempts</h4>
+            <p>Aggregate every formula variant from forums, private server wikis, and player spreadsheets spanning 20 years. Map where each was accurate and where it broke — the failure points are the data.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="process-step-num">02</div>
+          <div class="process-step-body">
+            <h4>Playtest and record all variables</h4>
+            <p>Controlled testing: ATK, DEF, every relevant stat variable across multiple character builds. Record actual outcomes. Build the raw empirical dataset that no community attempt had done systematically.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="process-step-num">03</div>
+          <div class="process-step-body">
+            <h4>Run induction and interpolation loops</h4>
+            <p>Treat the data as a convergence problem. Iterate: propose formula → test against recorded outcomes → identify deviation → refine → repeat until the formula holds across the full stat range.</p>
+          </div>
+        </div>
+        <div class="process-step">
+          <div class="process-step-num">04</div>
+          <div class="process-step-body">
+            <h4>Honest disclosure to team: ~90% accuracy at launch</h4>
+            <p><strong>Higher level = higher stat values = larger absolute deviation.</strong> The formula held cleanly at low and mid ranges, but high-level content introduced larger margins. This was disclosed to the team before launch — not buried.</p>
+            <div class="callout" style="margin-top:1rem">
+              <p><strong>Why the 90% confession is a strength:</strong> Shipping with known, documented uncertainty is how good engineers work on live products. Pretending 100% confidence and then patching quietly is how trust collapses. Iterative methodology, not perfection, was the standard.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="accuracy-card reveal">
+        <div class="accuracy-half">
+          <div class="accuracy-big gold">~90%</div>
+          <div class="accuracy-label">Accuracy at Launch</div>
+          <div class="accuracy-sub">Disclosed honestly to the team<br>before release</div>
+        </div>
+        <div class="accuracy-half">
+          <div class="accuracy-big green">100%</div>
+          <div class="accuracy-label">Accuracy after 2–3 Months Live</div>
+          <div class="accuracy-sub">Real player data refined<br>the formula to full precision</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ 04 · ECONOMY ═══════ -->
+  <section id="sr-economy" class="cs-section cs-section-alt">
+    <div class="wrap" style="position:relative">
+      <div class="sec-number">04</div>
+      <div class="section-label"><span class="label-line"></span>04 · Designing the Economy</div>
+      <h2 class="section-title reveal">
+        Drop rate is not a number.<br>
+        <em>It's a philosophy.</em>
+      </h2>
+      <div class="cs-prose reveal">
+        <p>In a free-trade MMORPG, the economy isn't a feature — it is the core loop. Every item drop, every rarity, every trading decision feeds back into why players return. The central design question had one sentence: <strong>"What do I get for 1 hour of grinding?"</strong></p>
+        <p>The answer had to change depending on where the player was in their journey.</p>
+      </div>
+
+      <div class="economy-phases reveal">
+        <div class="economy-phase">
+          <div class="economy-phase-tag">
+            <div class="economy-phase-name">Early</div>
+            <div class="economy-phase-tag-pill">Hook Phase</div>
+          </div>
+          <div class="economy-phase-content">
+            <p><strong>High reward density → fast progression feel.</strong> New players need to feel momentum immediately. Frequent drops, visible level gains, early equipment upgrades — the goal is to establish the grinding loop as satisfying before the player has any investment in the world.</p>
+          </div>
+        </div>
+        <div class="economy-phase">
+          <div class="economy-phase-tag">
+            <div class="economy-phase-name">Mid</div>
+            <div class="economy-phase-tag-pill">Investment Phase</div>
+          </div>
+          <div class="economy-phase-content">
+            <p><strong>Rewards become meaningful → longer session investment.</strong> The player now has context. An item matters because they understand what it enables. Drop density decreases, but perceived value increases. Sessions lengthen naturally because goals feel achievable but require real effort.</p>
+          </div>
+        </div>
+        <div class="economy-phase">
+          <div class="economy-phase-tag">
+            <div class="economy-phase-name">Late</div>
+            <div class="economy-phase-tag-pill">Ecosystem Phase</div>
+          </div>
+          <div class="economy-phase-content">
+            <p><strong>Rare items as long-term goals → trading activity → living ecosystem.</strong> Late game players aren't just grinding for themselves — they're participating in an economy. Item scarcity drives pricing, pricing drives trade, trade drives social interaction. The drop rate here isn't just a reward design decision; it's a market supply decision.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cs-prose reveal" style="margin-top:2rem">
+        <p>The result: grinding felt purposeful across all phases. Players stayed — and the retention numbers reflect it.</p>
+      </div>
+
+      <div class="retention-grid reveal">
+        <div class="retention-stat">
+          <div class="retention-day">Day 1</div>
+          <div class="retention-pct d1" data-target="58.6">0%</div>
+          <div class="retention-type">D1 Retention</div>
+        </div>
+        <div class="retention-stat">
+          <div class="retention-day">Day 2</div>
+          <div class="retention-pct d2" data-target="51.0">0%</div>
+          <div class="retention-type">D2 Retention</div>
+        </div>
+        <div class="retention-stat">
+          <div class="retention-day">Day 7</div>
+          <div class="retention-pct d7" data-target="36.1">0%</div>
+          <div class="retention-type">D7 Retention</div>
+        </div>
+        <div class="retention-stat">
+          <div class="retention-day">Day 14</div>
+          <div class="retention-pct d14" data-target="26.9">0%</div>
+          <div class="retention-type">D14 Retention</div>
+        </div>
+        <div class="retention-stat">
+          <div class="retention-day">Day 30</div>
+          <div class="retention-pct d30" data-target="20.4">0%</div>
+          <div class="retention-type">D30 Retention</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ 05 · WHAT BROKE ═══════ -->
+  <section id="sr-failures" class="cs-section" style="background:var(--bg)">
+    <div class="wrap" style="position:relative">
+      <div class="sec-number">05</div>
+      <div class="section-label"><span class="label-line"></span>05 · What Broke</div>
+      <h2 class="section-title reveal">
+        Three failures.<br>
+        <em>Each honest, each documented.</em>
+      </h2>
+      <div class="cs-prose reveal">
+        <p>A live MMORPG with a free trade economy and an undocumented baseline is not a controlled experiment. Things broke. Here's what happened and how it was addressed — not the sanitized version.</p>
+      </div>
+
+      <div class="failure-list reveal">
+
+        <div class="failure-card">
+          <div class="failure-header">
+            <span class="failure-icon">⚔️</span>
+            <span class="failure-title">Combat Edge Cases</span>
+          </div>
+          <div class="failure-body">
+            <p>Rare statistical combinations — high DEF builds paired with certain elemental resistance stacking — produced damage outcomes that fell outside the formula's predicted range post-launch. The formula was correct for expected play patterns; it hadn't been stress-tested against every theoretical edge case at extreme stat values.</p>
+            <div class="failure-fix">
+              <span class="failure-fix-label">FIX →</span>
+              <p>Addressed per edge case rather than rebuilding the formula. A formula rebuild on a live game creates a cascade of secondary balance issues. Surgical fixes, properly documented, carried lower overall risk.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="failure-card">
+          <div class="failure-header">
+            <span class="failure-icon">🤖</span>
+            <span class="failure-title">Monetization Exploit — Bot Farms</span>
+          </div>
+          <div class="failure-body">
+            <p>An investment package — pay upfront, receive currency returns per player level-up — was designed around expected organic leveling speed. What was not anticipated: bot farms operating at scale, leveling at speeds far beyond human players. After 30 days, bot accounts had recovered <strong>180% of invested currency</strong> versus the actual revenue those packages should have generated. The market destabilized.</p>
+            <p>Leveling speed and leveling difficulty had both been underestimated for non-human operators. The economic model assumed human behavior.</p>
+            <div class="failure-fix">
+              <span class="failure-fix-label">FIX →</span>
+              <p>Rebalanced return ratios to reflect realistic operator scaling. Split the hard currency into a separate special currency for discount investment packages — removing cross-economy trading and isolating the exploit vector from the broader market.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="failure-card">
+          <div class="failure-header">
+            <span class="failure-icon">📉</span>
+            <span class="failure-title">Rare Item Inflation</span>
+          </div>
+          <div class="failure-body">
+            <p>In a free-trade game, rare items function as publisher currency. Their scarcity is the mechanism that gives them value — and that value supports the entire in-game economy. But natural drop rates, even when deliberately low, cannot account for uncontrollable bot-volume multiplication. When bot farms run 24/7, even a 0.01% drop rate becomes a supply problem at scale.</p>
+            <div class="failure-fix">
+              <span class="failure-fix-label">FIX →</span>
+              <p>Redesigned the economic loop to ensure long-term market sustainability — introducing structural supply controls that accounted for non-human volume rather than assuming purely organic player activity.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ 06 · RESULTS ═══════ -->
+  <section id="sr-results" class="cs-section cs-section-alt">
+    <div class="wrap" style="position:relative">
+      <div class="sec-number">06</div>
+      <div class="section-label"><span class="label-line"></span>06 · Results</div>
+      <h2 class="section-title reveal">
+        21 months.<br>
+        <em>Numbers that held.</em>
+      </h2>
+
+      <div class="results-grid reveal">
+        <div class="result-card">
+          <div class="result-big" data-target="21">0</div>
+          <div class="result-label">Months in Production</div>
+          <div class="result-sub">Oct 2022 → Jul 2024</div>
+        </div>
+        <div class="result-card">
+          <div class="result-big" style="font-size:clamp(2rem,4vw,3rem)">≤ 3</div>
+          <div class="result-label">Game Design Team Size</div>
+          <div class="result-sub">Across the full 21-month timeline</div>
+        </div>
+        <div class="result-card">
+          <div class="result-big">20.4%</div>
+          <div class="result-label">D30 Retention</div>
+          <div class="result-sub">Sustained through live economy design</div>
+        </div>
+        <div class="result-card">
+          <div class="result-big" style="font-size:clamp(2rem,4vw,3rem)">$1.5M+</div>
+          <div class="result-label">Revenue — Month 1</div>
+          <div class="result-sub">Target exceeded at launch</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ 07 · LESSON ═══════ -->
+  <section id="sr-lesson" class="cs-section" style="background:var(--bg)">
+    <div class="wrap" style="position:relative">
+      <div class="sec-number">07</div>
+      <div class="section-label"><span class="label-line"></span>07 · Lesson</div>
+      <h2 class="section-title reveal">
+        What the rebuild<br>
+        <em>actually taught me.</em>
+      </h2>
+      <div class="lesson-quote reveal">
+        <p>"Rebuilding a 20-year-old game isn't about copying its features. It's about understanding why those features made people <em>choose it</em> over everything else — and whether that reason still holds today."</p>
+        <p>"The hardest design question isn't <em>'what should I build?'</em> It's <em>'what was the original designer actually trying to solve — and was he right?'</em>"</p>
+      </div>
+      <div class="meta-skill reveal" style="margin-top:2rem; max-width:740px">
+        <div class="meta-skill-icon">💡</div>
+        <div class="meta-skill-body">
+          <strong>The Real Skill — And Why It Transfers</strong>
+          <p>Most design work comes with ambiguous direction. Briefs are incomplete. Managers give you context but not intent. The original author is unavailable. This project taught me to work backward from outcomes — to reconstruct the logic behind decisions that were never documented, and to decide when that logic still applied and when it didn't. That's not a game design skill. That's a career skill.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ BOTTOM NAV ═══════ -->
+  <section style="border-top:1px solid var(--border); background:var(--bg2)">
+    <div class="wrap" style="padding-top:3rem; padding-bottom:3rem;">
+      <div class="cs-nav">
+        <a href="index.html#projects" class="cs-nav-back">
+          ← <span data-i18n="cs_all_projects">All Projects</span>
+        </a>
+        <div class="cs-nav-projects">
+          <a href="yulgang.html" class="btn btn-ghost" style="font-size:0.78rem">← Yulgang</a>
+          <a href="darksummoner.html" class="btn btn-ghost" style="font-size:0.78rem">← Dark Summoner</a>
+          <a href="index.html#contact" class="btn btn-primary" style="font-size:0.78rem" data-i18n="cs_lets_talk">Let's Talk →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ FOOTER ═══════ -->
+  <footer>
+    <span data-i18n="footer_copy">© 2025 Minh Bach</span>
+    <span data-i18n="footer_tagline">Game Designer · Product Owner · Ho Chi Minh City, Vietnam</span>
+  </footer>
+
+  <!-- ═══════ FLOATING DESKTOP PANEL ═══════ -->
+  <div class="float-panel" id="floatPanel">
+    <div class="fp-section fp-lang">
+      <a onclick="switchLang('vi')" class="fp-lang-toggle" data-show-when="en" style="cursor:pointer">
+        <span class="flag-mini flag-mini-vi"></span> Tiếng Việt
+      </a>
+      <a onclick="switchLang('en')" class="fp-lang-toggle" data-show-when="vi" style="cursor:pointer">
+        <span class="flag-mini flag-mini-en"></span> English
+      </a>
+    </div>
+    <div class="fp-divider"></div>
+    <a href="https://zalo.me/0908992408" target="_blank" class="fp-action fp-action--zalo" title="Chat on Zalo">
+      <span class="fp-action-icon"><svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="8" fill="#0068FF"/><path d="M7 21.5c0 .8.7 1.5 1.5 1.5H10l-.5 2.5 3-2.5h8c.8 0 1.5-.7 1.5-1.5v-9C22.5 11.7 21.8 11 21 11H8.5C7.7 11 7 11.7 7 12.5v9z" fill="white"/><path d="M10 16h12M10 19h8" stroke="#0068FF" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+      <span class="fp-action-text"><span class="fp-action-name">Zalo</span><span class="fp-action-sub">0908 992 408</span></span>
+    </a>
+    <div class="fp-divider"></div>
+    <a href="https://www.linkedin.com/in/minhbachlap" target="_blank" class="fp-action fp-action--linkedin" title="Message on LinkedIn">
+      <span class="fp-action-icon"><svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="8" fill="#0A66C2"/><path d="M8 12h4v12H8zM10 10.5a2 2 0 110-4 2 2 0 010 4zM14 12h3.8v1.7h.05C18.4 12.6 19.8 12 21.4 12c3.5 0 4.1 2.3 4.1 5.3V24h-4v-5.9c0-1.4 0-3.2-2-3.2s-2.3 1.6-2.3 3.1V24H14V12z" fill="white"/></svg></span>
+      <span class="fp-action-text"><span class="fp-action-name">LinkedIn</span><span class="fp-action-sub" data-i18n="fp_linkedin_dm">Send a Message</span></span>
+    </a>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script>
+    // Silkroad-specific: trigger countup animations on reveal
+    const sio = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          if (e.target.classList.contains('retention-grid')) triggerCountUp();
+          if (e.target.classList.contains('results-grid')) triggerResultsCountUp();
+        }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.retention-grid, .results-grid').forEach(el => sio.observe(el));
+  </script>
+</body>
+</html>

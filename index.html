@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Minh Bach — Game Designer &amp; Product Owner</title>
+  <meta name="description" content="Game Designer &amp; Product Owner with 8+ years shaping MMORPG systems.">
+  <meta property="og:title" content="Minh Bach — Game Designer &amp; Product Owner">
+  <meta property="og:description" content="Systems That Play. Products That Last.">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css?v=3">
+  <!-- i18n engine — must be first script, runs synchronously before DOMContentLoaded -->
+  <script src="js/i18n.js"></script>
+</head>
+<body>
+
+  <!-- ═══════ NAV ═══════ -->
+  <nav id="navbar">
+    <div class="nav-left">
+      <a class="nav-logo" href="index.html">MB<span class="nav-logo-dot">.</span></a>
+      <!-- Language switcher in nav -->
+      <div class="nav-lang-switch">
+        <a onclick="switchLang('en')" class="lang-btn" data-lang-btn="en" title="English" style="cursor:pointer">
+          <span class="flag-mini flag-mini-en"></span>
+          <span class="lang-label">EN</span>
+        </a>
+        <span class="lang-divider">|</span>
+        <a onclick="switchLang('vi')" class="lang-btn" data-lang-btn="vi" title="Tiếng Việt" style="cursor:pointer">
+          <span class="flag-mini flag-mini-vi"></span>
+          <span class="lang-label">VI</span>
+        </a>
+      </div>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#about" data-i18n="nav_about">About</a></li>
+      <li><a href="#projects" data-i18n="nav_projects">Projects</a></li>
+      <li><a href="#journey" data-i18n="nav_journey">Journey</a></li>
+      <li><a href="#skills" data-i18n="nav_skills">Skills</a></li>
+      <li><a href="#contact" class="nav-cta" data-i18n="nav_cta">Let's Talk</a></li>
+    </ul>
+    <button class="nav-burger" id="burgerBtn" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+  <div class="nav-overlay" id="navOverlay"></div>
+  <nav class="nav-drawer" id="navDrawer">
+    <div class="drawer-flags">
+      <a onclick="switchLang('en')" class="nav-flag" data-lang-btn="en" style="cursor:pointer">
+        <span class="flag-mini flag-mini-en"></span> EN
+      </a>
+      <a onclick="switchLang('vi')" class="nav-flag" data-lang-btn="vi" style="cursor:pointer">
+        <span class="flag-mini flag-mini-vi"></span> VI
+      </a>
+    </div>
+    <a href="#about"    onclick="closeMenu()" data-i18n="nav_about">About</a>
+    <a href="#projects" onclick="closeMenu()" data-i18n="nav_projects">Projects</a>
+    <a href="#journey"  onclick="closeMenu()" data-i18n="nav_journey">Journey</a>
+    <a href="#skills"   onclick="closeMenu()" data-i18n="nav_skills">Skills</a>
+    <a href="#contact"  onclick="closeMenu()" data-i18n="nav_cta">Let's Talk</a>
+  </nav>
+
+  <!-- ═══════ HERO ═══════ -->
+  <section id="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-content">
+      <div class="hero-text">
+        <div class="hero-eyebrow">
+          <span class="hero-eyebrow-line"></span>
+          <span data-i18n="hero_eyebrow">Game Designer · Product Owner</span>
+        </div>
+        <h1 class="hero-name"><span data-i18n="hero_name_1">Minh</span><br><span class="accent" data-i18n="hero_name_2">Bach</span></h1>
+        <p class="hero-tagline" data-i18n="hero_tagline">Systems That Play. Products That Last.</p>
+        <p class="hero-desc" data-i18n="hero_desc"></p>
+        <div class="hero-cta">
+          <a href="#projects" class="btn btn-primary" data-i18n="hero_cta_work">View My Work</a>
+          <a href="#contact"  class="btn btn-ghost"   data-i18n="hero_cta_connect">Let's Connect</a>
+        </div>
+
+        <!-- ── Hero inline stats ── -->
+        <div class="hero-stats">
+          <div class="hero-stat-item">
+            <div class="hero-stat-num">8<span>+</span></div>
+            <div class="hero-stat-label" data-i18n="hstat_years">Years in Game Industry</div>
+          </div>
+          <div class="hero-stat-sep"></div>
+          <div class="hero-stat-item">
+            <div class="hero-stat-num">5<span>+</span></div>
+            <div class="hero-stat-label" data-i18n="hstat_orgs">Organizations</div>
+          </div>
+          <div class="hero-stat-sep"></div>
+          <div class="hero-stat-item">
+            <div class="hero-stat-num">10<span>+</span></div>
+            <div class="hero-stat-label" data-i18n="hstat_products">Hardcore Products</div>
+          </div>
+          <div class="hero-stat-sep"></div>
+          <div class="hero-stat-item">
+            <div class="hero-stat-num">3<span>+</span></div>
+            <div class="hero-stat-label" data-i18n="hstat_awards">Industry Awards</div>
+          </div>
+        </div>
+
+        <!-- ── Peak performance highlights ── -->
+        <div class="hero-peaks">
+          <div class="hero-peak-label" data-i18n="hstat_peaks_label">Peak Performance Highlights</div>
+          <div class="hero-peak-chips">
+            <span class="hero-peak-chip">20,000 DAU</span>
+            <span class="hero-peak-chip">4,000 CCU</span>
+            <span class="hero-peak-chip">800 CCU <span data-i18n="hstat_private">Private Project</span></span>
+            <span class="hero-peak-chip gold">1.5M+ <span data-i18n="hstat_rev">1st Month Revenue</span></span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-avatar-wrap">
+        <img src="images/avatar.png" alt="Minh Bach — Game Designer" class="hero-avatar">
+        <div class="hero-avatar-ring"></div>
+        <div class="hero-avatar-tag">HCM<br>VN</div>
+      </div>
+    </div>
+    <div class="hero-scroll">
+      <span class="scroll-line"></span> <span data-i18n="hero_scroll">Scroll to explore</span>
+    </div>
+  </section>
+
+  <!-- ═══════ ABOUT / POSITIONING ═══════ -->
+  <section id="about">
+    <div class="wrap">
+      <div class="section-label"><span class="label-line"></span><span data-i18n="about_label">Who I Am</span></div>
+      <h2 class="section-title"><span data-i18n="about_title_1">Designing Games</span><br><em data-i18n="about_title_2">From the Inside Out</em></h2>
+      <p class="about-intro reveal" data-i18n="about_intro"></p>
+      <div class="value-cards">
+        <div class="value-card reveal">
+          <div class="value-icon">⚙️</div>
+          <h3 data-i18n="about_card1_title">Systems Thinker</h3>
+          <p data-i18n="about_card1_desc"></p>
+        </div>
+        <div class="value-card reveal" style="transition-delay:0.1s">
+          <div class="value-icon">📊</div>
+          <h3 data-i18n="about_card2_title">Data-Shaped</h3>
+          <p data-i18n="about_card2_desc"></p>
+        </div>
+        <div class="value-card reveal" style="transition-delay:0.2s">
+          <div class="value-icon">🎯</div>
+          <h3 data-i18n="about_card3_title">Product-Minded</h3>
+          <p data-i18n="about_card3_desc"></p>
+        </div>
+      </div>
+
+      <!-- ── Design Philosophy (embedded) ── -->
+      <blockquote class="about-philosophy reveal" style="transition-delay:0.35s">
+        <span class="about-philosophy-icon">💡</span>
+        <p data-i18n="about_think_quote"></p>
+      </blockquote>
+    </div>
+  </section>
+
+  <!-- ═══════ FEATURED PROJECTS ═══════ -->
+  <section id="projects">
+    <div class="wrap">
+      <div class="section-label"><span class="label-line"></span><span data-i18n="proj_label">Portfolio</span></div>
+      <h2 class="section-title reveal"><span data-i18n="proj_title_1">Featured</span> <em data-i18n="proj_title_2">Projects</em></h2>
+      <p class="section-intro reveal" data-i18n="proj_intro"></p>
+      <div class="projects-grid">
+
+        <!-- PROJECT 1: Silkroad -->
+        <article class="project-card project-card--featured reveal">
+          <img src="images/silkroadonline.png" alt="Silkroad Online Origin Mobile" class="project-banner">
+          <div class="project-body">
+            <div class="project-meta">
+              <span class="project-tag tag-featured" data-i18n="proj_sr_featured">Featured International Project</span>
+              <span class="project-tag" data-i18n="proj_sr_tag1">Company Project</span>
+              <span class="project-tag" data-i18n="proj_sr_tag2">2025</span>
+              <span class="project-tag tag-role" data-i18n="proj_sr_tag3">Product Owner &amp; Game Design Lead</span>
+            </div>
+            <h3 class="project-title" data-i18n="proj_sr_title">Silkroad Online<br>Origin Mobile</h3>
+            <p class="project-impact" data-i18n="proj_sr_impact"></p>
+            <p class="project-desc" data-i18n="proj_sr_desc"></p>
+            <div class="project-stats">
+              <div class="project-stat"><span class="stat-badge">🏆</span><span data-i18n="proj_sr_stat1">Game of the Year</span></div>
+              <div class="project-stat"><span class="stat-badge">🎨</span><span data-i18n="proj_sr_stat2">Best Graphics</span></div>
+              <div class="project-stat"><span class="stat-badge">🎮</span><span data-i18n="proj_sr_stat3">Best Gameplay</span></div>
+            </div>
+            <div class="chips">
+              <span class="chip" data-i18n="chip_product_ownership">Product Ownership</span>
+              <span class="chip" data-i18n="chip_mmorpg">MMORPG</span>
+              <span class="chip" data-i18n="chip_mobile_adapt">Mobile Adaptation</span>
+              <span class="chip" data-i18n="chip_team_lead">Team Lead</span>
+              <span class="chip" data-i18n="chip_combat_sys">Combat System</span>
+              <span class="chip" data-i18n="chip_reverse_eng">Full Reverse-Engineering</span>
+            </div>
+            <a href="silkroad.html" class="project-link"><span data-i18n="proj_sr_link">Read Case Study</span> <span class="arrow">→</span></a>
+          </div>
+        </article>
+
+        <!-- PROJECT 2: Yulgang -->
+        <article class="project-card reveal" style="transition-delay:0.15s">
+          <img src="images/yulgangonline.png" alt="Yulgang Online" class="project-banner">
+          <div class="project-body">
+            <div class="project-meta">
+              <span class="project-tag tag-featured" data-i18n="proj_yg_featured">Featured Individual Project</span>
+              <span class="project-tag" data-i18n="proj_yg_tag1">Personal Project</span>
+              <span class="project-tag" data-i18n="proj_yg_tag2">2017–2019</span>
+              <span class="project-tag tag-role" data-i18n="proj_yg_tag3">Solo Founder &amp; Designer</span>
+            </div>
+            <h3 class="project-title" data-i18n="proj_yg_title">Yulgang Private Server<br>Hiệp Khách Giang Hồ</h3>
+            <p class="project-impact" data-i18n="proj_yg_impact"></p>
+            <p class="project-desc" data-i18n="proj_yg_desc"></p>
+            <div class="project-stats">
+              <div class="project-stat"><span class="stat-badge">👥</span><span data-i18n="proj_yg_stat1">780 Peak CCU</span></div>
+              <div class="project-stat"><span class="stat-badge">📈</span><span data-i18n="proj_yg_stat2">65% RR7</span></div>
+            </div>
+            <div class="chips">
+              <span class="chip" data-i18n="chip_game_design">Game Design</span>
+              <span class="chip" data-i18n="chip_live_ops">Live Operations</span>
+              <span class="chip" data-i18n="chip_economy">Economy Design</span>
+              <span class="chip" data-i18n="chip_community">Community Management</span>
+              <span class="chip" data-i18n="chip_full_po">Full Product Ownership</span>
+            </div>
+            <a href="yulgang.html" class="project-link"><span data-i18n="proj_yg_link">View Project</span> <span class="arrow">→</span></a>
+          </div>
+        </article>
+
+      </div><!-- /.projects-grid (flagship) -->
+
+      <!-- ── Supporting Work ── -->
+      <div class="projects-supporting-header reveal">
+        <span class="label-line"></span>
+        <span data-i18n="proj_supporting_label">Supporting Work</span>
+        <span class="projects-supporting-hint" data-i18n="proj_supporting_hint">Additional case demonstrating live-system depth</span>
+      </div>
+
+      <div class="projects-grid projects-grid--supporting">
+        <!-- PROJECT 3: Dark Summoner — Supporting Case -->
+        <article class="project-card project-card--supporting reveal">
+          <img src="images/darksummoner.png" alt="Dark Summoner" class="project-banner project-banner--supporting">
+          <div class="project-body">
+            <div class="project-meta">
+              <span class="project-tag tag-supporting" data-i18n="proj_ds_type">Supporting Case Study</span>
+              <span class="project-tag" data-i18n="proj_ds_tag1">Live Ops Design</span>
+              <span class="project-tag" data-i18n="proj_ds_tag2">Event Rework</span>
+              <span class="project-tag" data-i18n="proj_ds_tag3">Balance Tuning</span>
+            </div>
+            <h3 class="project-title" data-i18n="proj_ds_title">Dark Summoner</h3>
+            <p class="project-impact" data-i18n="proj_ds_impact"></p>
+            <p class="project-desc" data-i18n="proj_ds_desc"></p>
+            <div class="project-stats">
+              <div class="project-stat"><span class="stat-badge">🔄</span><span data-i18n="proj_ds_stat1">Live Systems Reworked</span></div>
+              <div class="project-stat"><span class="stat-badge">⚖️</span><span data-i18n="proj_ds_stat2">Balance Framework Built</span></div>
+            </div>
+            <a href="darksummoner.html" class="project-link project-link--supporting"><span data-i18n="proj_ds_link">View Case Study</span> <span class="arrow">→</span></a>
+          </div>
+        </article>
+      </div><!-- /.projects-grid--supporting -->
+
+    </div>
+  </section>
+
+
+  <!-- ═══════ JOURNEY + TRUST SIGNALS ═══════ -->
+  <section id="journey">
+    <div class="wrap">
+      <div class="section-label"><span class="label-line"></span><span data-i18n="journey_label">The Story</span></div>
+      <h2 class="section-title reveal"><span data-i18n="journey_title_1">From QA to</span><br><em data-i18n="journey_title_2">Game of the Year</em></h2>
+      <p class="section-intro reveal" data-i18n="journey_intro"></p>
+
+      <div class="journey-timeline">
+
+        <!-- 2017 -->
+        <div class="j-item reveal">
+          <div class="j-marker"><div class="j-dot"></div><div class="j-line"></div></div>
+          <div class="j-content">
+            <div class="j-header">
+              <span class="j-year" data-i18n="j1_year">2017</span>
+              <div class="ph j-logo-ph"></div>
+              <span class="j-company" data-i18n="j1_company">Collaboration · Travian</span>
+            </div>
+            <h3 class="j-title" data-i18n="j1_title">The Start — How Players Play the Game</h3>
+            <p class="j-desc" data-i18n="j1_desc"></p>
+            <div class="j-lesson">
+              <span class="j-lesson-label" data-i18n="j1_insight_label">Key Insight:</span>
+              <span data-i18n="j1_insight"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2018-2019 -->
+        <div class="j-item reveal">
+          <div class="j-marker"><div class="j-dot"></div><div class="j-line"></div></div>
+          <div class="j-content">
+            <div class="j-header">
+              <span class="j-year" data-i18n="j2_year">2018–2019</span>
+              <div class="ph j-logo-ph"></div>
+              <span class="j-company" data-i18n="j2_company">Game Op &amp; Design · Yulgang Private</span>
+            </div>
+            <h3 class="j-title" data-i18n="j2_title">The Build-Up — How a Product Runs</h3>
+            <p class="j-desc" data-i18n="j2_desc"></p>
+            <div class="j-achievements">
+              <span class="j-badge">780 CCU</span>
+              <span class="j-badge">RR7 65%</span>
+              <span class="j-badge accent" data-i18n="j2_badge_mindset">Shifted player mindset</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2020 -->
+        <div class="j-item reveal">
+          <div class="j-marker"><div class="j-dot"></div><div class="j-line"></div></div>
+          <div class="j-content">
+            <div class="j-header">
+              <span class="j-year" data-i18n="j3_year">2020</span>
+              <div class="ph j-logo-ph"></div>
+              <span class="j-company" data-i18n="j3_company">Game Operation · SOHAGAMES</span>
+            </div>
+            <h3 class="j-title" data-i18n="j3_title">The Foundation — How to Work as an Organization</h3>
+            <p class="j-desc" data-i18n="j3_desc"></p>
+            <div class="j-achievements">
+              <span class="j-badge accent" data-i18n="j3_badge1">110%+ KPI × 10 months</span>
+              <span class="j-badge"       data-i18n="j3_badge2">Best Project 2020</span>
+              <span class="j-badge"       data-i18n="j3_badge3">Fastest Break-Even 2020</span>
+              <span class="j-badge gold"  data-i18n="j3_badge4">★ Outstanding Employee 2020</span>
+            </div>
+            <div class="j-achievement-photo">
+              <img src="images/employeeOTY.png" alt="SohaGame Employee of the Year 2020" class="j-photo">
+              <span class="j-photo-caption" data-i18n="j3_photo_caption">Outstanding Employee &amp; Project Team Award — SohaGame 2020</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2021 · ATEAM -->
+        <div class="j-item reveal">
+          <div class="j-marker"><div class="j-dot"></div><div class="j-line"></div></div>
+          <div class="j-content">
+            <div class="j-header">
+              <span class="j-year" data-i18n="j4_year">2021</span>
+              <div class="ph j-logo-ph"></div>
+              <span class="j-company" data-i18n="j4_company">Live-ops Design · ATEAM Vietnam</span>
+            </div>
+            <h3 class="j-title" data-i18n="j4_title">The Acceleration — Beyond Operation</h3>
+            <p class="j-desc" data-i18n="j4_desc"></p>
+            <div class="j-achievements">
+              <span class="j-badge gold" data-i18n="j4_badge1">★ Promising Employee 2021</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2022-2025 · GihOt Studio -->
+        <div class="j-item j-item--current reveal">
+          <div class="j-marker"><div class="j-dot j-dot--active"></div></div>
+          <div class="j-content">
+            <div class="j-header">
+              <span class="j-year" data-i18n="j5_year">2022–2025</span>
+              <div class="ph j-logo-ph"></div>
+              <span class="j-company" data-i18n="j5_company">Game Design Lead · GihOt Studio</span>
+            </div>
+            <h3 class="j-title" data-i18n="j5_title">The Reward — Silkroad Online Origin Mobile</h3>
+            <p class="j-desc" data-i18n="j5_desc"></p>
+            <div class="j-achievements">
+              <span class="j-badge gold" data-i18n="j5_badge1">🏆 Best Gameplay</span>
+              <span class="j-badge gold" data-i18n="j5_badge2">🏆 Best Graphics</span>
+              <span class="j-badge gold" data-i18n="j5_badge3">🏆 Game of the Year</span>
+            </div>
+            <div class="j-achievement-photo">
+              <img src="images/hattrick.png" alt="Vietnam Game Awards 2025 — Triple Win" class="j-photo">
+              <span class="j-photo-caption" data-i18n="j5_photo_caption">🏆 Vietnam Game Awards 2025 Triple Win — Game of the Year, Best Gameplay, Best Graphic Design</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+    </div>
+  </section>
+
+  <!-- ═══════ SKILLS & METHODS ═══════ -->
+  <section id="skills">
+    <div class="wrap">
+      <div class="section-label"><span class="label-line"></span><span data-i18n="skills_label">Toolkit</span></div>
+      <h2 class="section-title reveal"><span data-i18n="skills_title_1">Skills &amp;</span> <em data-i18n="skills_title_2">Methods</em></h2>
+      <p class="section-intro reveal" data-i18n="skills_intro"></p>
+      <div class="skills-grid">
+        <div class="skill-group reveal">
+          <h3 class="skill-group-title">🎮 <span data-i18n="skills_design">Design</span></h3>
+          <div class="skill-tags">
+            <span class="skill-tag">Gameplay Systems</span>
+            <span class="skill-tag">Economy Design</span>
+            <span class="skill-tag">Combat Balance</span>
+            <span class="skill-tag">Content Design</span>
+            <span class="skill-tag">UX/UI Wireframing</span>
+            <span class="skill-tag">Progression Systems</span>
+            <span class="skill-tag">Reward Design</span>
+            <span class="skill-tag">Quest Design</span>
+          </div>
+        </div>
+        <div class="skill-group reveal" style="transition-delay:0.1s">
+          <h3 class="skill-group-title">📊 <span data-i18n="skills_methods">Methods</span></h3>
+          <div class="skill-tags">
+            <span class="skill-tag">Data Analysis</span>
+            <span class="skill-tag">A/B Testing</span>
+            <span class="skill-tag">Player Segmentation</span>
+            <span class="skill-tag">Live-Ops Planning</span>
+            <span class="skill-tag">Competitive Analysis</span>
+            <span class="skill-tag">Post-Launch Tuning</span>
+          </div>
+        </div>
+        <div class="skill-group reveal" style="transition-delay:0.2s">
+          <h3 class="skill-group-title">🛠️ <span data-i18n="skills_tools">Tools</span></h3>
+          <div class="skill-tags">
+            <span class="skill-tag">Excel / Sheets (Advanced)</span>
+            <span class="skill-tag">Figma</span>
+            <span class="skill-tag">Miro</span>
+            <span class="skill-tag">Confluence</span>
+            <span class="skill-tag">JIRA</span>
+            <span class="skill-tag">SQL</span>
+          </div>
+        </div>
+        <div class="skill-group reveal" style="transition-delay:0.3s">
+          <h3 class="skill-group-title">🌐 <span data-i18n="skills_domains">Domains</span></h3>
+          <div class="skill-tags">
+            <span class="skill-tag">MMORPG</span>
+            <span class="skill-tag">RPG Mobile</span>
+            <span class="skill-tag">PC-to-Mobile Adaptation</span>
+            <span class="skill-tag">F2P Monetization</span>
+            <span class="skill-tag">Private Server Management</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ COLLABORATION / SERVICES ═══════ -->
+  <section id="collab">
+    <div class="wrap">
+      <div class="section-label" style="justify-content:center"><span class="label-line"></span><span data-i18n="collab_label">Opportunities</span></div>
+      <h2 class="section-title reveal" style="text-align:center"><span data-i18n="collab_title_1">Let's Build Something</span><br><em data-i18n="collab_title_2">Together</em></h2>
+      <p class="collab-intro reveal" data-i18n="collab_intro"></p>
+      <div class="collab-grid">
+        <div class="collab-card reveal">
+          <div class="collab-icon">🎮</div>
+          <h3 data-i18n="collab_c1_title">Full Game Design</h3>
+          <p data-i18n="collab_c1_desc"></p>
+        </div>
+        <div class="collab-card reveal" style="transition-delay:0.1s">
+          <div class="collab-icon">⚖️</div>
+          <h3 data-i18n="collab_c2_title">Economy &amp; Balance</h3>
+          <p data-i18n="collab_c2_desc"></p>
+        </div>
+        <div class="collab-card reveal" style="transition-delay:0.2s">
+          <div class="collab-icon">📱</div>
+          <h3 data-i18n="collab_c3_title">PC-to-Mobile Adaptation</h3>
+          <p data-i18n="collab_c3_desc"></p>
+        </div>
+        <div class="collab-card reveal" style="transition-delay:0.3s">
+          <div class="collab-icon">🗺️</div>
+          <h3 data-i18n="collab_c4_title">Product Strategy</h3>
+          <p data-i18n="collab_c4_desc"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ CONTACT ═══════ -->
+  <section id="contact">
+    <div class="wrap">
+      <div class="contact-inner reveal">
+        <h2 class="contact-title"><span data-i18n="contact_title_1">Got a Game That</span><br><span data-i18n="contact_title_2">Needs</span> <em data-i18n="contact_title_3">Shaping</em>?</h2>
+        <p class="contact-sub" data-i18n="contact_sub"></p>
+        <div class="contact-row">
+          <a href="mailto:bachlapminh140395@gmail.com" class="btn btn-primary" data-i18n="contact_email">Send an Email</a>
+          <a href="https://www.linkedin.com/in/minhbachlap" target="_blank" class="btn btn-ghost" data-i18n="contact_linkedin">Connect on LinkedIn</a>
+          <a href="https://zalo.me/0908992408" target="_blank" class="btn btn-ghost" data-i18n="contact_zalo">Zalo / Phone</a>
+          <a href="https://drive.google.com/file/d/17wLcW9e8RWjWMfk-zJor8GdvVzge3hv6/view?usp=drive_link" target="_blank" class="btn btn-ghost" data-i18n="contact_cv">Download CV</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ FOOTER ═══════ -->
+  <footer>
+    <span data-i18n="footer_copy">© 2025 Minh Bach</span>
+    <span data-i18n="footer_tagline">Game Designer · Product Owner · Ho Chi Minh City, Vietnam</span>
+  </footer>
+
+  <!-- ═══════ FLOATING DESKTOP PANEL ═══════ -->
+  <div class="float-panel" id="floatPanel">
+    <!-- Language toggle — shows only the opposite language -->
+    <div class="fp-section fp-lang">
+      <a onclick="switchLang('vi')" class="fp-lang-toggle" data-show-when="en" style="cursor:pointer">
+        <span class="flag-mini flag-mini-vi"></span> Tiếng Việt
+      </a>
+      <a onclick="switchLang('en')" class="fp-lang-toggle" data-show-when="vi" style="cursor:pointer">
+        <span class="flag-mini flag-mini-en"></span> English
+      </a>
+    </div>
+    <div class="fp-divider"></div>
+    <!-- Zalo / Phone -->
+    <a href="https://zalo.me/0908992408" target="_blank" class="fp-action fp-action--zalo" title="Chat on Zalo">
+      <span class="fp-action-icon">
+        <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="32" height="32" rx="8" fill="#0068FF"/>
+          <path d="M7 21.5c0 .8.7 1.5 1.5 1.5H10l-.5 2.5 3-2.5h8c.8 0 1.5-.7 1.5-1.5v-9C22.5 11.7 21.8 11 21 11H8.5C7.7 11 7 11.7 7 12.5v9z" fill="white"/>
+          <path d="M10 16h12M10 19h8" stroke="#0068FF" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <span class="fp-action-text">
+        <span class="fp-action-name">Zalo</span>
+        <span class="fp-action-sub">0908 992 408</span>
+      </span>
+    </a>
+    <div class="fp-divider"></div>
+    <!-- LinkedIn -->
+    <a href="https://www.linkedin.com/in/minhbachlap" target="_blank" class="fp-action fp-action--linkedin" title="Message on LinkedIn">
+      <span class="fp-action-icon">
+        <svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="32" height="32" rx="8" fill="#0A66C2"/>
+          <path d="M8 12h4v12H8zM10 10.5a2 2 0 110-4 2 2 0 010 4zM14 12h3.8v1.7h.05C18.4 12.6 19.8 12 21.4 12c3.5 0 4.1 2.3 4.1 5.3V24h-4v-5.9c0-1.4 0-3.2-2-3.2s-2.3 1.6-2.3 3.1V24H14V12z" fill="white"/>
+        </svg>
+      </span>
+      <span class="fp-action-text">
+        <span class="fp-action-name">LinkedIn</span>
+        <span class="fp-action-sub" data-i18n="fp_linkedin_dm">Send a Message</span>
+      </span>
+    </a>
+  </div>
+
+  <script src="js/common.js"></script>
+
+</body>
+</html>

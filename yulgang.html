@@ -1,13 +1,3 @@
-<?php
-session_start();
-if (isset($_GET['lang']) && in_array($_GET['lang'], ['en', 'vi'])) {
-    $_SESSION['lang'] = $_GET['lang'];
-}
-$currentLang = $_SESSION['lang'] ?? 'en';
-// Case study page — English-primary, hardcoded content
-// Nav lang switcher still works for switching context
-$otherLang = ($currentLang === 'en') ? 'vi' : 'en';
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,34 +11,29 @@ $otherLang = ($currentLang === 'en') ? 'vi' : 'en';
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=3">
+  <script src="js/i18n.js"></script>
   <style>
-    /* ════════ READING PROGRESS BAR ════════ */
     #readingProgress {
       position: fixed;
       top: 0; left: 0;
       height: 2px;
       width: 0%;
-      background: var(--gold);
+      background: linear-gradient(90deg, var(--gold-dk), var(--gold), var(--gold-lt));
       z-index: 9999;
       transition: width 0.1s linear;
     }
 
-    /* ════════ PAGE HERO (case study) ════════ */
     .cs-hero {
-      min-height: 55vh;
+      min-height: 60vh;
       display: flex;
       align-items: flex-end;
-      padding: 7rem var(--px) 3rem;
+      padding: 7rem var(--px) 4rem;
       position: relative;
       overflow: hidden;
-      background: linear-gradient(160deg, var(--bg) 0%, var(--bg2) 60%, var(--bg) 100%);
+      background: linear-gradient(165deg, #0B1218 0%, #111820 50%, #0d1019 100%);
     }
-    .cs-hero-glow {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-    }
+    .cs-hero-glow { position: absolute; inset: 0; pointer-events: none; }
     .cs-hero-glow::before {
       content: '';
       position: absolute;
@@ -56,11 +41,7 @@ $otherLang = ($currentLang === 'en') ? 'vi' : 'en';
       width: 65vw; height: 65vw;
       max-width: 750px; max-height: 750px;
       border-radius: 50%;
-      background: radial-gradient(circle,
-        rgba(242,201,76,0.07) 0%,
-        rgba(74,137,200,0.03) 40%,
-        transparent 70%
-      );
+      background: radial-gradient(circle, rgba(242,201,76,0.09) 0%, rgba(74,137,200,0.03) 40%, transparent 70%);
     }
     .cs-hero-glow::after {
       content: '';
@@ -69,407 +50,143 @@ $otherLang = ($currentLang === 'en') ? 'vi' : 'en';
       width: 50vw; height: 50vw;
       max-width: 500px; max-height: 500px;
       border-radius: 50%;
-      background: radial-gradient(circle,
-        rgba(74,137,200,0.05) 0%,
-        transparent 60%
-      );
+      background: radial-gradient(circle, rgba(74,137,200,0.05) 0%, transparent 60%);
     }
-    .cs-hero-content {
-      max-width: var(--max-w);
-      margin: 0 auto;
-      width: 100%;
-      position: relative;
-    }
+    .cs-hero-content { max-width: var(--max-w); margin: 0 auto; width: 100%; position: relative; }
 
-    /* Breadcrumb */
     .cs-breadcrumb {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      font-family: var(--f-mono);
-      font-size: 0.65rem;
-      letter-spacing: 0.08em;
-      color: var(--text3);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 0.75rem;
+      font-family: var(--f-mono); font-size: 0.65rem;
+      letter-spacing: 0.08em; color: var(--text3);
       margin-bottom: 2rem;
-      opacity: 0;
-      animation: fadeUp 0.7s var(--ease) 0.1s forwards;
+      opacity: 0; animation: fadeUp 0.7s var(--ease) 0.1s forwards;
     }
-    .cs-breadcrumb a {
-      color: var(--text3);
-      transition: color 0.2s;
-    }
+    .cs-breadcrumb a { color: var(--text3); transition: color 0.2s; }
     .cs-breadcrumb a:hover { color: var(--gold); }
     .cs-breadcrumb .bc-gold { color: var(--gold); }
     .cs-breadcrumb .bc-sep { margin: 0 0.5rem; opacity: 0.4; }
-    .cs-reading-time {
-      font-family: var(--f-mono);
-      font-size: 0.6rem;
-      color: var(--text3);
-      letter-spacing: 0.08em;
-    }
+    .cs-reading-time { font-family: var(--f-mono); font-size: 0.6rem; color: var(--text3); letter-spacing: 0.08em; }
 
-    /* Eyebrow */
     .cs-eyebrow {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      font-family: var(--f-mono);
-      font-size: 0.65rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--gold);
+      display: flex; align-items: center; gap: 0.75rem;
+      font-family: var(--f-mono); font-size: 0.65rem;
+      letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold);
       margin-bottom: 1.25rem;
-      opacity: 0;
-      animation: fadeUp 0.7s var(--ease) 0.2s forwards;
+      opacity: 0; animation: fadeUp 0.7s var(--ease) 0.2s forwards;
     }
-    .cs-eyebrow-line {
-      display: block;
-      width: 2.5rem; height: 1px;
+    .cs-eyebrow-line { display: block; width: 2.5rem; height: 1px; background: var(--gold); }
+
+    .cs-timeline-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-family: var(--f-mono); font-size: 0.6rem; letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold); background: rgba(242,201,76,0.08);
+      border: 1px solid rgba(242,201,76,0.25);
+      padding: 0.35rem 0.8rem; border-radius: 4px;
+      margin-bottom: 1.25rem;
+      opacity: 0; animation: fadeUp 0.7s var(--ease) 0.15s forwards;
+    }
+    .cs-timeline-dot {
+      width: 5px; height: 5px; border-radius: 50%;
       background: var(--gold);
+      box-shadow: 0 0 6px rgba(242,201,76,0.7);
+      animation: goldPulse 2s ease-in-out infinite;
+    }
+    @keyframes goldPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.7); }
     }
 
-    /* Title */
     .cs-title {
       font-family: var(--f-display);
       font-size: clamp(2.5rem, 6vw, 4.5rem);
-      font-weight: 700;
-      line-height: 0.95;
-      letter-spacing: -0.02em;
-      color: var(--text);
+      font-weight: 700; line-height: 0.95;
+      letter-spacing: -0.02em; color: var(--text);
       margin-bottom: 1rem;
-      opacity: 0;
-      animation: fadeUp 0.7s var(--ease) 0.35s forwards;
+      opacity: 0; animation: fadeUp 0.7s var(--ease) 0.35s forwards;
     }
     .cs-subtitle {
       font-family: var(--f-display);
-      font-size: clamp(1rem, 2vw, 1.25rem);
-      font-weight: 500;
-      font-style: italic;
-      color: var(--gold);
+      font-size: clamp(1rem, 2vw, 1.4rem);
+      font-weight: 500; font-style: italic; color: var(--gold);
       margin-bottom: 2.5rem;
-      opacity: 0;
-      animation: fadeUp 0.7s var(--ease) 0.5s forwards;
+      opacity: 0; animation: fadeUp 0.7s var(--ease) 0.5s forwards;
+      letter-spacing: -0.01em;
     }
 
-    /* Impact stats row */
     .cs-stats {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 1.25rem;
-      opacity: 0;
-      animation: fadeUp 0.7s var(--ease) 0.65s forwards;
+      opacity: 0; animation: fadeUp 0.7s var(--ease) 0.65s forwards;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border3);
     }
     .cs-stat {
-      text-align: center;
-      padding: 1.5rem 1rem;
-      border: 1px solid var(--border);
-      border-radius: 10px;
+      text-align: center; padding: 1.5rem 1rem;
+      border: 1px solid var(--border); border-radius: 10px;
       background: var(--bg3);
       transition: border-color 0.3s, transform 0.3s var(--ease);
     }
-    .cs-stat:hover {
-      border-color: var(--border2);
-      transform: translateY(-3px);
-    }
+    .cs-stat:hover { border-color: var(--border2); transform: translateY(-3px); }
 
-    /* Scroll indicator */
-    .cs-scroll {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      font-family: var(--f-mono);
-      font-size: 0.58rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--text3);
-      margin-top: 3rem;
-      opacity: 0;
-      animation: fadeUp 0.7s var(--ease) 0.9s forwards;
-    }
-    .cs-scroll .scroll-line {
-      width: 2.5rem; height: 1px;
-      background: var(--text3);
-      transform-origin: left;
-      animation: scrollPulse 2.5s ease-in-out infinite;
-    }
+    /* Context 2-col */
+    .cs-context-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 3rem; align-items: start; }
+    .cs-context-text p { font-size: 0.95rem; color: var(--text2); line-height: 1.85; margin-bottom: 1.25rem; }
 
-    /* ════════ CONTEXT — 2 col ════════ */
-    .cs-context-grid {
-      display: grid;
-      grid-template-columns: 1.5fr 1fr;
-      gap: 3rem;
-      align-items: start;
-    }
-    .cs-context-text p {
-      font-size: 0.95rem;
-      color: var(--text2);
-      line-height: 1.85;
-      margin-bottom: 1.25rem;
-    }
-
-    /* Role evolution card */
-    .role-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.75rem;
-    }
-    .role-card-title {
-      font-family: var(--f-mono);
-      font-size: 0.65rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--text3);
-      margin-bottom: 1.25rem;
-    }
-    .role-timeline {
-      position: relative;
-      padding-left: 1.5rem;
-      border-left: 2px solid var(--border2);
-    }
-    .role-item {
-      position: relative;
-      padding: 0.65rem 0;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-    .role-item::before {
-      content: '';
-      position: absolute;
-      left: -1.85rem;
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--bg3);
-      border: 2px solid var(--border2);
-    }
-    .role-item.role-highlight::before {
-      background: var(--gold);
-      border-color: var(--gold);
-      box-shadow: 0 0 8px rgba(242,201,76,0.4);
-    }
-    .role-year {
-      font-family: var(--f-mono);
-      font-size: 0.6rem;
-      color: var(--text3);
-      letter-spacing: 0.08em;
-      flex-shrink: 0;
-      width: 2.5rem;
-    }
+    .role-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 1.75rem; }
+    .role-card-title { font-family: var(--f-mono); font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); margin-bottom: 1.25rem; }
+    .role-timeline { position: relative; padding-left: 1.5rem; border-left: 2px solid var(--border2); }
+    .role-item { position: relative; padding: 0.65rem 0; display: flex; align-items: center; gap: 0.75rem; }
+    .role-item::before { content: ''; position: absolute; left: -1.85rem; width: 8px; height: 8px; border-radius: 50%; background: var(--bg3); border: 2px solid var(--border2); }
+    .role-item.role-highlight::before { background: var(--gold); border-color: var(--gold); box-shadow: 0 0 8px rgba(242,201,76,0.4); }
+    .role-year { font-family: var(--f-mono); font-size: 0.6rem; color: var(--text3); letter-spacing: 0.08em; flex-shrink: 0; width: 2.5rem; }
     .role-highlight .role-year { color: var(--gold); }
 
-    /* ════════ CHALLENGE — 2 equal cols ════════ */
-    .cs-challenge-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-    }
+    .cs-challenge-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
 
-    /* ════════ PHASE CARDS ════════ */
-    .cs-phase-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-    }
-    .phase-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: clamp(1.5rem, 3vw, 2rem);
-      transition: border-color 0.3s, transform 0.3s var(--ease), box-shadow 0.3s;
-    }
-    .phase-card:hover {
-      border-color: var(--border2);
-      transform: translateY(-4px);
-      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
-    }
-    .phase-eyebrow {
-      font-family: var(--f-mono);
-      font-size: 0.6rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      margin-bottom: 0.85rem;
-    }
+    .cs-phase-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+    .phase-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: clamp(1.5rem, 3vw, 2rem); transition: border-color 0.3s, transform 0.3s var(--ease), box-shadow 0.3s; }
+    .phase-card:hover { border-color: var(--border2); transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.3); }
+    .phase-eyebrow { font-family: var(--f-mono); font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 0.85rem; }
     .phase-eyebrow.gold { color: var(--gold); }
     .phase-eyebrow.muted { color: var(--text3); }
-    .phase-card h3 {
-      font-family: var(--f-display);
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 0.85rem;
-      line-height: 1.3;
-    }
-    .phase-card > p {
-      font-size: 0.88rem;
-      color: var(--text2);
-      line-height: 1.75;
-      margin-bottom: 1.25rem;
-    }
+    .phase-card h3 { font-family: var(--f-display); font-size: 1.1rem; font-weight: 600; color: var(--text); margin-bottom: 0.85rem; line-height: 1.3; }
+    .phase-card > p { font-size: 0.88rem; color: var(--text2); line-height: 1.75; margin-bottom: 1.25rem; }
 
-    /* ════════ DESIGN DECISION CARDS ════════ */
-    .dd-card {
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: clamp(1.5rem, 3vw, 2.5rem);
-      margin-bottom: 2rem;
-      transition: border-color 0.3s, box-shadow 0.3s;
-    }
-    .dd-card:hover {
-      border-color: var(--border2);
-      box-shadow: 0 12px 48px rgba(0,0,0,0.25);
-    }
-    .dd-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      margin-bottom: 1.25rem;
-    }
-    .dd-title {
-      font-family: var(--f-display);
-      font-size: clamp(1.15rem, 2.5vw, 1.5rem);
-      font-weight: 700;
-      color: var(--text);
-      line-height: 1.2;
-      margin-bottom: 1.5rem;
-    }
+    .dd-card { background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; padding: clamp(1.5rem, 3vw, 2.5rem); margin-bottom: 2rem; transition: border-color 0.3s, box-shadow 0.3s; }
+    .dd-card:hover { border-color: var(--border2); box-shadow: 0 12px 48px rgba(0,0,0,0.25); }
+    .dd-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.25rem; }
+    .dd-title { font-family: var(--f-display); font-size: clamp(1.15rem, 2.5vw, 1.5rem); font-weight: 700; color: var(--text); line-height: 1.2; margin-bottom: 1.5rem; }
 
-    /* ════════ STORY BLOCK (new component) ════════ */
-    .story-block {
-      display: flex;
-      flex-direction: column;
-      gap: 0;
-    }
-    .story-step {
-      display: grid;
-      grid-template-columns: 6rem 1fr;
-      gap: 1.25rem;
-      padding: 1.4rem 0;
-      border-bottom: 1px solid var(--border);
-    }
+    .story-block { display: flex; flex-direction: column; gap: 0; }
+    .story-step { display: grid; grid-template-columns: 6rem 1fr; gap: 1.25rem; padding: 1.4rem 0; border-bottom: 1px solid var(--border); }
     .story-step:last-child { border-bottom: none; }
-    .story-step-label {
-      font-family: var(--f-mono);
-      font-size: 0.6rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--text3);
-      padding-top: 0.15rem;
-      line-height: 1.5;
-    }
-    .story-step-label span {
-      display: block;
-      color: var(--gold);
-      font-size: 0.7rem;
-      margin-bottom: 0.2rem;
-    }
-    .story-step-content {
-      font-size: 0.92rem;
-      color: var(--text2);
-      line-height: 1.8;
-    }
+    .story-step-label { font-family: var(--f-mono); font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text3); padding-top: 0.15rem; line-height: 1.5; }
+    .story-step-label span { display: block; color: var(--gold); font-size: 0.7rem; margin-bottom: 0.2rem; }
+    .story-step-content { font-size: 0.92rem; color: var(--text2); line-height: 1.8; }
     .story-step-content strong { color: var(--text); font-weight: 500; }
 
-    /* ════════ CALLOUT BLOCK (new component) ════════ */
-    .callout {
-      border-left: 2px solid var(--gold);
-      background: rgba(242,201,76,0.05);
-      padding: 1.1rem 1.4rem;
-      border-radius: 0 8px 8px 0;
-      margin: 1.75rem 0;
-    }
-    .callout p {
-      font-size: 0.92rem;
-      color: var(--text2);
-      line-height: 1.75;
-      margin: 0;
-    }
+    .callout { border-left: 2px solid var(--gold); background: rgba(242,201,76,0.05); padding: 1.1rem 1.4rem; border-radius: 0 8px 8px 0; margin: 1.75rem 0; }
+    .callout p { font-size: 0.92rem; color: var(--text2); line-height: 1.75; margin: 0; }
     .callout strong { color: var(--gold); font-weight: 600; }
-    .callout--blue {
-      border-left-color: var(--blue-dk);
-      background: rgba(74,137,200,0.06);
+    .callout--blue { border-left-color: var(--blue-dk); background: rgba(74,137,200,0.06); }
+
+    .cs-secondary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+
+    .cs-results-text { font-size: 1.05rem; font-weight: 400; color: var(--text2); max-width: 640px; line-height: 1.85; margin-top: 2.5rem; }
+    .cs-results-text strong { color: var(--text); font-weight: 500; }
+
+    .cs-nav { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    .cs-nav-back { display: flex; align-items: center; font-family: var(--f-mono); font-size: 0.7rem; letter-spacing: 0.08em; color: var(--text3); transition: color 0.2s; }
+    .cs-nav-back:hover { color: var(--gold); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
-    /* ════════ SECONDARY SYSTEMS (3-col) ════════ */
-    .cs-secondary-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.25rem;
-    }
-
-    /* ════════ RESULTS SECTION ════════ */
-    .cs-results-text {
-      font-size: 1.05rem;
-      font-weight: 400;
-      color: var(--text2);
-      max-width: 640px;
-      line-height: 1.85;
-      margin-top: 2.5rem;
-    }
-    .cs-results-text strong {
-      color: var(--text);
-      font-weight: 500;
-    }
-
-    /* ════════ NEXT PROJECT NAV ════════ */
-    .cs-next {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-      align-items: center;
-    }
-    .cs-next-back {
-      display: flex;
-      align-items: center;
-    }
-    .cs-next-card {
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: clamp(1.5rem, 3vw, 2rem);
-      transition: border-color 0.3s, transform 0.3s var(--ease), box-shadow 0.3s;
-    }
-    .cs-next-card:hover {
-      border-color: var(--border2);
-      transform: translateY(-4px);
-      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
-    }
-    .cs-next-label {
-      font-family: var(--f-mono);
-      font-size: 0.6rem;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--text3);
-      margin-bottom: 0.65rem;
-    }
-    .cs-next-title {
-      font-family: var(--f-display);
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 0.5rem;
-      line-height: 1.25;
-    }
-    .cs-next-desc {
-      font-size: 0.85rem;
-      color: var(--text2);
-      line-height: 1.6;
-      margin-bottom: 1rem;
-    }
-    .cs-next-badges {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-      margin-bottom: 1.25rem;
-    }
-
-    /* ════════ RESPONSIVE (case study specifics) ════════ */
     @media (max-width: 900px) {
       .cs-hero { min-height: auto; padding-top: 6rem; }
       .cs-stats { grid-template-columns: repeat(2, 1fr); }
@@ -477,17 +194,12 @@ $otherLang = ($currentLang === 'en') ? 'vi' : 'en';
       .cs-challenge-grid { grid-template-columns: 1fr; }
       .cs-phase-grid { grid-template-columns: 1fr; }
       .cs-secondary-grid { grid-template-columns: 1fr; }
-      .cs-next { grid-template-columns: 1fr; }
     }
-
     @media (max-width: 640px) {
       .cs-hero { padding-top: 5.5rem; }
       .cs-stats { grid-template-columns: repeat(2, 1fr); gap: 0.85rem; }
       .cs-title { font-size: clamp(2rem, 10vw, 3rem); }
-      .story-step {
-        grid-template-columns: 1fr;
-        gap: 0.4rem;
-      }
+      .story-step { grid-template-columns: 1fr; gap: 0.4rem; }
       .story-step-label { padding-bottom: 0.25rem; }
       .cs-breadcrumb { font-size: 0.55rem; }
     }
@@ -495,30 +207,28 @@ $otherLang = ($currentLang === 'en') ? 'vi' : 'en';
 </head>
 <body>
 
-  <!-- ═══════ READING PROGRESS BAR ═══════ -->
   <div id="readingProgress"></div>
 
   <!-- ═══════ NAV ═══════ -->
   <nav id="navbar">
     <div class="nav-left">
-      <a class="nav-logo" href="index.php">MB<span class="nav-logo-dot">.</span></a>
-      <!-- Language flags in nav -->
-      <div class="nav-flags">
-        <a href="yulgang.php?lang=vi" class="nav-flag<?= $currentLang === 'vi' ? ' active' : '' ?>" title="Tiếng Việt">
-          <span class="flag-mini flag-mini-vi"></span>
+      <a class="nav-logo" href="index.html">MB<span class="nav-logo-dot">.</span></a>
+      <div class="nav-lang-switch">
+        <a onclick="switchLang('en')" class="lang-btn" data-lang-btn="en" style="cursor:pointer">
+          <span class="flag-mini flag-mini-en"></span><span class="lang-label">EN</span>
         </a>
-        <a href="yulgang.php?lang=en" class="nav-flag<?= $currentLang === 'en' ? ' active' : '' ?>" title="English">
-          <span class="flag-mini flag-mini-en"></span>
+        <span class="lang-divider">|</span>
+        <a onclick="switchLang('vi')" class="lang-btn" data-lang-btn="vi" style="cursor:pointer">
+          <span class="flag-mini flag-mini-vi"></span><span class="lang-label">VI</span>
         </a>
       </div>
     </div>
     <ul class="nav-links">
-      <li><a href="portfolio.php#about">About</a></li>
-      <li><a href="portfolio.php#projects">Projects</a></li>
-      <li><a href="portfolio.php#thinking">Thinking</a></li>
-      <li><a href="portfolio.php#journey">Journey</a></li>
-      <li><a href="portfolio.php#skills">Skills</a></li>
-      <li><a href="portfolio.php#contact" class="nav-cta">Let's Talk</a></li>
+      <li><a href="index.html#about" data-i18n="nav_about">About</a></li>
+      <li><a href="index.html#projects" class="active" data-i18n="nav_projects">Projects</a></li>
+      <li><a href="index.html#journey" data-i18n="nav_journey">Journey</a></li>
+      <li><a href="index.html#skills" data-i18n="nav_skills">Skills</a></li>
+      <li><a href="index.html#contact" class="nav-cta" data-i18n="nav_cta">Let's Talk</a></li>
     </ul>
     <button class="nav-burger" id="burgerBtn" aria-label="Open menu">
       <span></span><span></span><span></span>
@@ -527,47 +237,49 @@ $otherLang = ($currentLang === 'en') ? 'vi' : 'en';
   <div class="nav-overlay" id="navOverlay"></div>
   <nav class="nav-drawer" id="navDrawer">
     <div class="drawer-flags">
-      <a href="yulgang.php?lang=vi" class="nav-flag<?= $currentLang === 'vi' ? ' active' : '' ?>">
-        <span class="flag-mini flag-mini-vi"></span> VI
-      </a>
-      <a href="yulgang.php?lang=en" class="nav-flag<?= $currentLang === 'en' ? ' active' : '' ?>">
+      <a onclick="switchLang('en')" class="nav-flag" data-lang-btn="en" style="cursor:pointer">
         <span class="flag-mini flag-mini-en"></span> EN
       </a>
+      <a onclick="switchLang('vi')" class="nav-flag" data-lang-btn="vi" style="cursor:pointer">
+        <span class="flag-mini flag-mini-vi"></span> VI
+      </a>
     </div>
-    <a href="portfolio.php#about"    onclick="closeMenu()">About</a>
-    <a href="portfolio.php#projects" onclick="closeMenu()">Projects</a>
-    <a href="portfolio.php#thinking" onclick="closeMenu()">Thinking</a>
-    <a href="portfolio.php#journey"  onclick="closeMenu()">Journey</a>
-    <a href="portfolio.php#skills"   onclick="closeMenu()">Skills</a>
-    <a href="portfolio.php#contact"  onclick="closeMenu()">Let's Talk</a>
+    <a href="index.html#about"    onclick="closeMenu()" data-i18n="nav_about">About</a>
+    <a href="index.html#projects" onclick="closeMenu()" data-i18n="nav_projects">Projects</a>
+    <a href="index.html#journey"  onclick="closeMenu()" data-i18n="nav_journey">Journey</a>
+    <a href="index.html#skills"   onclick="closeMenu()" data-i18n="nav_skills">Skills</a>
+    <a href="index.html#contact"  onclick="closeMenu()" data-i18n="nav_cta">Let's Talk</a>
   </nav>
 
   <!-- ═══════ PAGE HERO ═══════ -->
-  <section class="cs-hero">
+  <header class="cs-hero" id="cs-hero-top">
+    <img src="images/yulgangonline.png" alt="" class="cs-hero-img" aria-hidden="true">
     <div class="cs-hero-glow"></div>
     <div class="cs-hero-content">
 
-      <!-- Breadcrumb -->
       <div class="cs-breadcrumb">
         <div>
-          <a href="portfolio.php">← Back</a>
+          <a href="index.html">← <span data-i18n="cs_back">Back</span></a>
           <span class="bc-sep">/</span>
-          <a href="portfolio.php#projects" class="bc-gold">Projects</a>
+          <a href="index.html#projects" class="bc-accent" data-i18n="cs_projects">Projects</a>
           <span class="bc-sep">/</span>
           <span>Yulgang Private Server</span>
         </div>
         <span class="cs-reading-time">~5 min read</span>
       </div>
 
-      <!-- Eyebrow -->
-      <div class="cs-eyebrow">
-        <span class="cs-eyebrow-line"></span>
-        MMORPG · Game Design · Solo Designer · 2017–2018
+      <div class="cs-timeline-badge">
+        <span class="cs-timeline-dot"></span>
+        2017 → 2018 &nbsp;·&nbsp; Solo Designer
       </div>
 
-      <!-- Title -->
+      <div class="cs-eyebrow">
+        <span class="cs-eyebrow-line"></span>
+        <span data-i18n="yg_eyebrow">MMORPG · Game Design · Solo Designer</span>
+      </div>
+
       <h1 class="cs-title">Yulgang Private Server</h1>
-      <p class="cs-subtitle">Reshape the culture. Rewrite the game.</p>
+      <p class="cs-subtitle" data-i18n="yg_subtitle">Reshape the culture. Rewrite the game.</p>
 
       <!-- Impact stats -->
       <div class="cs-stats">
@@ -584,13 +296,32 @@ $otherLang = ($currentLang === 'en') ? 'vi' : 'en';
           <div class="trust-label">Industry first<br>systems</div>
         </div>
       </div>
-
-      <!-- Scroll indicator -->
-      <div class="cs-scroll">
-        <span class="scroll-line"></span> Scroll to read
-      </div>
     </div>
-  </section>
+  </header>
+
+  <!-- ═══════ STICKY TOC BAR ═══════ -->
+  <div class="cs-toc-bar" id="csTocBar">
+    <div class="cs-toc-inner">
+      <a href="#context"      class="cs-toc-link" data-section="context"><span class="cs-toc-num">01</span><span data-i18n="yg_toc_context">Background</span></a>
+      <a href="#challenge"    class="cs-toc-link" data-section="challenge"><span class="cs-toc-num">02</span><span data-i18n="yg_toc_challenge">Challenge</span></a>
+      <a href="#phases"       class="cs-toc-link" data-section="phases"><span class="cs-toc-num">03</span><span data-i18n="yg_toc_phases">Two Phases</span></a>
+      <a href="#decisions"    class="cs-toc-link" data-section="decisions"><span class="cs-toc-num">04</span><span data-i18n="yg_toc_decisions">Decisions</span></a>
+      <a href="#other-systems" class="cs-toc-link" data-section="other-systems"><span class="cs-toc-num">05</span><span data-i18n="yg_toc_other">Other Systems</span></a>
+      <a href="#results"      class="cs-toc-link" data-section="results"><span class="cs-toc-num">06</span><span data-i18n="yg_toc_results">Results</span></a>
+      <a href="#reflection"   class="cs-toc-link" data-section="reflection"><span class="cs-toc-num">07</span><span data-i18n="yg_toc_reflection">Reflection</span></a>
+      <div class="cs-toc-sep"></div>
+      <div class="cs-toc-lang">
+        <a onclick="switchLang('en')" class="cs-toc-lang-btn" data-lang-btn="en" style="cursor:pointer">
+          <span class="flag-mini flag-mini-en"></span>EN
+        </a>
+        <span class="cs-toc-divider">|</span>
+        <a onclick="switchLang('vi')" class="cs-toc-lang-btn" data-lang-btn="vi" style="cursor:pointer">
+          <span class="flag-mini flag-mini-vi"></span>VI
+        </a>
+      </div>
+      <a href="index.html#contact" class="cs-toc-cta" data-i18n="cs_lets_talk">Let's Talk →</a>
+    </div>
+  </div>
 
   <!-- ═══════ CONTEXT ═══════ -->
   <section id="context" style="background:var(--bg); border-top:1px solid var(--border)">
@@ -608,7 +339,7 @@ $otherLang = ($currentLang === 'en') ? 'vi' : 'en';
             <div class="role-timeline">
               <div class="role-item">
                 <span class="role-year">2017</span>
-                <span class="j-badge">Player & Observer</span>
+                <span class="j-badge">Player &amp; Observer</span>
               </div>
               <div class="role-item">
                 <span class="role-year">2017</span>
@@ -616,7 +347,7 @@ $otherLang = ($currentLang === 'en') ? 'vi' : 'en';
               </div>
               <div class="role-item">
                 <span class="role-year">2018</span>
-                <span class="j-badge accent">Partner — Event & Ops</span>
+                <span class="j-badge accent">Partner — Event &amp; Ops</span>
               </div>
               <div class="role-item role-highlight">
                 <span class="role-year">2018</span>
@@ -675,7 +406,6 @@ $otherLang = ($currentLang === 'en') ? 'vi' : 'en';
           </div>
         </div>
       </div>
-      <a href="https://docs.google.com/spreadsheets/" target="_blank" class="btn btn-ghost" style="font-size:0.75rem; padding:0.65rem 1.25rem">↗ View planning comparison (Phase 1 vs Phase 2)</a>
     </div>
   </section>
 
@@ -686,7 +416,7 @@ $otherLang = ($currentLang === 'en') ? 'vi' : 'en';
       <h2 class="section-title reveal">Three systems.<br><em>Three design problems solved.</em></h2>
       <p class="section-intro reveal">Not a feature list — a set of observations turned into design.</p>
 
-      <!-- SYSTEM 1 — Circulatory Quest -->
+      <!-- SYSTEM 1 -->
       <div class="dd-card reveal">
         <div class="dd-header">
           <span class="project-tag">01 / CIRCULATORY QUEST SYSTEM</span>
@@ -712,7 +442,7 @@ $otherLang = ($currentLang === 'en') ? 'vi' : 'en';
         </div>
       </div>
 
-      <!-- SYSTEM 2 — Dungeon Resource -->
+      <!-- SYSTEM 2 -->
       <div class="dd-card reveal">
         <div class="dd-header">
           <span class="project-tag">02 / DUNGEON RESOURCE DISTRIBUTION</span>
@@ -738,7 +468,7 @@ $otherLang = ($currentLang === 'en') ? 'vi' : 'en';
         </div>
       </div>
 
-      <!-- SYSTEM 3 — Celestial-Demonic -->
+      <!-- SYSTEM 3 -->
       <div class="dd-card reveal">
         <div class="dd-header">
           <span class="project-tag">03 / CELESTIAL-DEMONIC WEAPONS</span>
@@ -841,21 +571,13 @@ $otherLang = ($currentLang === 'en') ? 'vi' : 'en';
 
   <!-- ═══════ NEXT PROJECT NAV ═══════ -->
   <section id="next-project" style="background:var(--bg2); border-top:1px solid var(--border)">
-    <div class="wrap">
-      <div class="cs-next">
-        <div class="cs-next-back reveal">
-          <a href="portfolio.php#projects" class="btn btn-ghost">← Back to All Projects</a>
-        </div>
-        <div class="cs-next-card reveal" style="transition-delay:0.1s">
-          <div class="cs-next-label">NEXT PROJECT</div>
-          <div class="cs-next-title">Silkroad Online Origin Mobile</div>
-          <div class="cs-next-desc">17 months. One mobile MMORPG. Three awards.</div>
-          <div class="cs-next-badges">
-            <span class="j-badge gold">🏆 Best Gameplay</span>
-            <span class="j-badge gold">🏆 Best Graphics</span>
-            <span class="j-badge gold">🏆 Game of the Year</span>
-          </div>
-          <a href="silkroad.php" class="btn btn-primary">Read Case Study <span>→</span></a>
+    <div class="wrap" style="padding-top:2.5rem; padding-bottom:2.5rem;">
+      <div class="cs-nav">
+        <a href="index.html#projects" class="cs-nav-back">← <span data-i18n="cs_all_projects">All Projects</span></a>
+        <div class="cs-nav-projects">
+          <a href="silkroad.html" class="btn btn-ghost" style="font-size:0.78rem">← Silkroad Online Mobile</a>
+          <a href="darksummoner.html" class="btn btn-ghost" style="font-size:0.78rem">← Dark Summoner</a>
+          <a href="index.html#contact" class="btn btn-primary" style="font-size:0.78rem" data-i18n="cs_lets_talk">Let's Talk →</a>
         </div>
       </div>
     </div>
@@ -863,83 +585,32 @@ $otherLang = ($currentLang === 'en') ? 'vi' : 'en';
 
   <!-- ═══════ FOOTER ═══════ -->
   <footer>
-    <span>© 2025 Minh Bach</span>
-    <span>Game Designer · Product Owner · Ho Chi Minh City, Vietnam</span>
+    <span data-i18n="footer_copy">© 2025 Minh Bach</span>
+    <span data-i18n="footer_tagline">Game Designer · Product Owner · Ho Chi Minh City, Vietnam</span>
   </footer>
 
-  <script>
-    // ═══════ Nav scroll effect ═══════
-    const navbar = document.getElementById('navbar');
-    window.addEventListener('scroll', () => {
-      navbar.classList.toggle('scrolled', window.scrollY > 60);
-    }, { passive: true });
+  <!-- ═══════ FLOATING DESKTOP PANEL ═══════ -->
+  <div class="float-panel" id="floatPanel">
+    <div class="fp-section fp-lang">
+      <a onclick="switchLang('vi')" class="fp-lang-toggle" data-show-when="en" style="cursor:pointer">
+        <span class="flag-mini flag-mini-vi"></span> Tiếng Việt
+      </a>
+      <a onclick="switchLang('en')" class="fp-lang-toggle" data-show-when="vi" style="cursor:pointer">
+        <span class="flag-mini flag-mini-en"></span> English
+      </a>
+    </div>
+    <div class="fp-divider"></div>
+    <a href="https://zalo.me/0908992408" target="_blank" class="fp-action fp-action--zalo" title="Chat on Zalo">
+      <span class="fp-action-icon"><svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="8" fill="#0068FF"/><path d="M7 21.5c0 .8.7 1.5 1.5 1.5H10l-.5 2.5 3-2.5h8c.8 0 1.5-.7 1.5-1.5v-9C22.5 11.7 21.8 11 21 11H8.5C7.7 11 7 11.7 7 12.5v9z" fill="white"/><path d="M10 16h12M10 19h8" stroke="#0068FF" stroke-width="1.5" stroke-linecap="round"/></svg></span>
+      <span class="fp-action-text"><span class="fp-action-name">Zalo</span><span class="fp-action-sub">0908 992 408</span></span>
+    </a>
+    <div class="fp-divider"></div>
+    <a href="https://www.linkedin.com/in/minhbachlap" target="_blank" class="fp-action fp-action--linkedin" title="Message on LinkedIn">
+      <span class="fp-action-icon"><svg width="20" height="20" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="8" fill="#0A66C2"/><path d="M8 12h4v12H8zM10 10.5a2 2 0 110-4 2 2 0 010 4zM14 12h3.8v1.7h.05C18.4 12.6 19.8 12 21.4 12c3.5 0 4.1 2.3 4.1 5.3V24h-4v-5.9c0-1.4 0-3.2-2-3.2s-2.3 1.6-2.3 3.1V24H14V12z" fill="white"/></svg></span>
+      <span class="fp-action-text"><span class="fp-action-name">LinkedIn</span><span class="fp-action-sub" data-i18n="fp_linkedin_dm">Send a Message</span></span>
+    </a>
+  </div>
 
-    // ═══════ Mobile menu ═══════
-    const burger  = document.getElementById('burgerBtn');
-    const drawer  = document.getElementById('navDrawer');
-    const overlay = document.getElementById('navOverlay');
-    function openMenu()  {
-      burger.classList.add('open');
-      drawer.classList.add('open');
-      overlay.classList.add('open');
-      document.body.style.overflow = 'hidden';
-    }
-    function closeMenu() {
-      burger.classList.remove('open');
-      drawer.classList.remove('open');
-      overlay.classList.remove('open');
-      document.body.style.overflow = '';
-    }
-    burger.addEventListener('click', () =>
-      drawer.classList.contains('open') ? closeMenu() : openMenu()
-    );
-    overlay.addEventListener('click', closeMenu);
-    window.addEventListener('resize', () => {
-      if (window.innerWidth > 768) closeMenu();
-    }, { passive: true });
-
-    // ═══════ Scroll reveal ═══════
-    const io = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) e.target.classList.add('visible');
-      });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-
-    // ═══════ Animated counters ═══════
-    const cio = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (!e.isIntersecting) return;
-        const el = e.target;
-        // Skip static entries (like "2×")
-        if (el.dataset.static) { cio.unobserve(el); return; }
-        const target = +el.dataset.target;
-        const suffix = el.dataset.suffix || '+';
-        const duration = 1800, step = target / (duration / 16);
-        let cur = 0;
-        const tick = setInterval(() => {
-          cur += step;
-          if (cur >= target) {
-            el.textContent = target + suffix;
-            clearInterval(tick);
-          } else {
-            el.textContent = Math.floor(cur);
-          }
-        }, 16);
-        cio.unobserve(el);
-      });
-    }, { threshold: 0.5 });
-    document.querySelectorAll('.trust-num[data-target]').forEach(el => cio.observe(el));
-
-    // ═══════ Reading progress bar ═══════
-    const progressBar = document.getElementById('readingProgress');
-    if (progressBar) {
-      window.addEventListener('scroll', () => {
-        const doc = document.documentElement;
-        const scrolled = doc.scrollTop / (doc.scrollHeight - doc.clientHeight);
-        progressBar.style.width = (scrolled * 100) + '%';
-      }, { passive: true });
-    }
-  </script>
+  <script src="js/common.js"></script>
 </body>
 </html>
